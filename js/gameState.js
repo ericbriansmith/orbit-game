@@ -4,7 +4,8 @@ var gameState;
 function newGame() {
   gameState = {
     planets: [
-      new Planet(0, 0, 20903520)
+      new Planet("earth", 0, 0, 20903520),
+      new Planet("mars", 0, -20903520 * 4, 20903520)
     ],
     rocket: Rocket()
   };
@@ -34,7 +35,7 @@ function Rocket() {
     x: 0,
     y: -20903530,
     dir: 0,
-    velocity: { x: 0, y:-100000 },
+    velocity: { x: 0, y:-1000000 },
     maxThrust: 100,
     throttle: 0, //0 to 100
     move: function(time) {
@@ -45,7 +46,8 @@ function Rocket() {
   return rocket;
 }
 
-function Planet (x,y,radius) {
+function Planet (name,x,y,radius) {
+  this.name = name;
   this.x=x;
   this.y=y;
   this.radius=radius;

@@ -9,12 +9,12 @@ function start() {
   canvas = $("#main")[0];
   newGame();
   lastTime = new Date().getTime();
+  ctx = canvas.getContext("2d");
   update();
 }
 
 function update() {
-  ctx = canvas.getContext("2d");
-  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  resetTransform();
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   var now = new Date().getTime();
   var timeDiff = now - lastTime;
@@ -22,6 +22,10 @@ function update() {
   gameState.rocket.move(timeDiff/1000);
   drawState();
   setTimeout(update, 1000/30);
+}
+
+function resetTransform() {
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
 }
 
 function drawState() {
@@ -40,8 +44,10 @@ function drawState() {
   }
   var index
   for (index=0; index < gameState.planets.length; index++) {
+    resetTransform();
     var planet = gameState.planets[index];
 
+    ctx.translate(gameWidth / 2, gameHeight / 2);
     ctx.translate(scale * (gameState.rocket.x * -1 + planet.x), scale * (gameState.rocket.y * -1 + planet.y));
     drawCircle(0, 0, planet.radius * scale);
   }
