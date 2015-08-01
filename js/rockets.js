@@ -42,7 +42,7 @@ function drawState() {
   if (scale > 1) {
     scale = 1;
   }
-  var index
+  var index;
   for (index=0; index < gameState.planets.length; index++) {
     resetTransform();
     var planet = gameState.planets[index];
