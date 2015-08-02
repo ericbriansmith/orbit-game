@@ -32,16 +32,16 @@ function drawState() {
   ctx.translate(gameWidth / 2, gameHeight / 2);
   ctx.rotate(gameState.rocket.dir*Math.PI/180);
   ctx.beginPath();
-  ctx.moveTo(0, -20);
-  ctx.lineTo(10, 10);
-  ctx.lineTo(-10, 10);
-  ctx.lineTo(0, -20);
-  ctx.stroke();
-  ctx.rotate(gameState.rocket.dir*Math.PI/-180);
   var scale = (gameHeight / 2 - planetPeek) / nearestPlanetDistance();
   if (scale > 1) {
     scale = 1;
   }
+  ctx.moveTo(0, -20 * scale);
+  ctx.lineTo(10 * scale, 10 * scale);
+  ctx.lineTo(-10 * scale, 10 * scale);
+  ctx.lineTo(0, -20 * scale);
+  ctx.stroke();
+  ctx.rotate(gameState.rocket.dir*Math.PI/-180);
   var index;
   for (index=0; index < gameState.planets.length; index++) {
     resetTransform();
