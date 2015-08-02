@@ -1,11 +1,12 @@
 
 var gameState;
+var gravity = 9.8;
 
 function newGame() {
   gameState = {
     planets: [
-      new Planet("earth", 0, 0, 20903520),
-      new Planet("mars", 0, -20903520 * 4, 20903520)
+      new Planet("earth", 0, 0, 6371390),
+      new Planet("mars", 0, -6371390 * 4, 6371390)
     ],
     rocket: Rocket()
   };
@@ -15,7 +16,7 @@ function nearestPlanetDistance() {
   var idx;
   var min = -1;
   for (idx=0; idx < gameState.planets.length; idx ++) {
-    var dist = getDistanceToPlanetSurface(gameState.planets[idx]);
+    var dist = getDistanceToPlanetSurface(gameState.planets[idx]).distance;
     if (min == -1 || dist < min) {
       min = dist;
     }
@@ -27,20 +28,25 @@ function getDistanceToPlanetSurface(planet) {
   var xDiff = gameState.rocket.x - planet.x;
   var yDiff = gameState.rocket.y - planet.y;
   var distToCenter = Math.sqrt(Math.pow(xDiff, 2) + Math.pow(yDiff, 2));
-  return distToCenter - planet.radius;
+  var distance = distToCenter - planet.radius;
+
+  return { distance: distance, x: xDiff / distToCenter, y: yDiff / distToCenter };
 }
 
 function Rocket() {
   var rocket = {
-    x: 0,
-    y: -20903530,
+    x: 5,
+    y: -6371420,
     dir: 0,
-    velocity: { x: 0, y:-1000000 },
+    velocity: { x: 0, y:0 },
     maxThrust: 100,
     throttle: 0, //0 to 100
     move: function(time) {
       this.x += this.velocity.x * time;
       this.y += this.velocity.y * time;
+      var distanceResult = getDistanceToPlanetSurface(gameState.planets[0]);
+      this.velocity.x -= distanceResult.x * 9.8 * time;
+      this.velocity.y -= distanceResult.y * 9.8 * time;
     }
   };
   return rocket;
