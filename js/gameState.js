@@ -17,13 +17,17 @@ function newGame() {
 function nearestPlanetDistance() {
   var idx;
   var min = -1;
+  var planet;
+  var minDistanceResult;
   for (idx=0; idx < gameState.planets.length; idx ++) {
-    var dist = getDistanceToPlanetSurface(gameState.planets[idx]).distance;
-    if (min == -1 || dist < min) {
-      min = dist;
+    var distanceResult = getDistanceToPlanetSurface(gameState.planets[idx]);
+    if (min == -1 || distanceResult.distance < min) {
+      min = distanceResult.distance;
+      planet = gameState.planets[idx];
+      minDistanceResult = distanceResult
     }
   }
-  return min;
+  return { distanceResult: minDistanceResult, planet: planet };
 }
 
 function getDistanceToPlanetSurface(planet) {
@@ -46,17 +50,20 @@ function Rocket() {
     y: 3000,
     dir: Math.PI / 2,
     dirChangeAmount: 1,
+    nearestPlanet: null,
+    nearestPlanetDistanceResult: null,
     velocity: { x: 0, y:0, total: 0 },
     maxThrust: 100,
     // throttle: 0, //0 to 100
     move: function(time) {
       this.x += this.velocity.x * time;
       this.y += this.velocity.y * time;
-      var distanceResult = getDistanceToPlanetSurface(gameState.planets[0]);
-      console.log("alt=" + distanceResult.distance);
-      var accel = gravityAcceleration(gameState.planets[0].mass,distanceResult.distToCenter);
-      this.velocity.x -= distanceResult.x * accel * time;
-      this.velocity.y -= distanceResult.y * accel * time;
+      var nearestPlanetResult = nearestPlanetDistance();
+      this.nearestPlanet = nearestPlanetResult.planet;
+      this.nearestPlanetDistanceResult = nearestPlanetResult.distanceResult;
+      var accel = gravityAcceleration(this.nearestPlanet.mass, this.nearestPlanetDistanceResult.distToCenter);
+      this.velocity.x -= this.nearestPlanetDistanceResult.x * accel * time;
+      this.velocity.y -= this.nearestPlanetDistanceResult.y * accel * time;
       if (gameState.input.spacebar) {
         this.velocity.y -= Math.cos(this.dir) * this.maxThrust * time;
         this.velocity.x += Math.sin(this.dir) * this.maxThrust * time;

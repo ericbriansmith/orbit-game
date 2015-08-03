@@ -39,7 +39,9 @@ function setupInput() {
         gameState.timeScale /= 2;
       }
     } else if (event.keyCode == 46) {
-      gameState.timeScale *= 2;
+      if (gameState.timeScale < 20) {
+        gameState.timeScale *= 2;
+      }
     }
   });
 }
@@ -62,7 +64,7 @@ function resetTransform() {
 
 function drawState() {
 
-  var scale = (gameHeight / 2 - planetPeek) / nearestPlanetDistance();
+  var scale = (gameHeight / 2 - planetPeek) / gameState.rocket.nearestPlanetDistanceResult.distance;
   if (scale > 1) {
     scale = 1;
   }
@@ -88,7 +90,7 @@ function drawRocket(scale) {
   ctx.lineTo(0, -20 * scale);
   ctx.rotate(-1 * gameState.rocket.dir);
   ctx.moveTo(0, 0);
-  ctx.lineTo(rocket.velocity.x * scale, rocket.velocity.y * scale);
+  ctx.lineTo(rocket.velocity.x, rocket.velocity.y);
   ctx.stroke();
 }
 
