@@ -3,7 +3,7 @@ var canvas;
 var gameWidth = 800;
 var gameHeight = 800;
 var lastTime;
-var planetPeek = 50;
+var planetPeek = 100;
 
 function start() {
   canvas = $("#main")[0];
@@ -33,6 +33,15 @@ function setupInput() {
       gameState.input.right = false;
     }
   });
+  document.addEventListener("keypress", function(event) {
+    if (event.keyCode == 44) {
+      if (gameState.timeScale >= 2) {
+        gameState.timeScale /= 2;
+      }
+    } else if (event.keyCode == 46) {
+      gameState.timeScale *= 2;
+    }
+  });
 }
 
 function update() {
@@ -42,7 +51,7 @@ function update() {
   var now = new Date().getTime();
   var timeDiff = now - lastTime;
   lastTime = now;
-  gameState.rocket.move(timeDiff/1000);
+  gameState.rocket.move(gameState.timeScale * timeDiff/1000);
   drawState();
   setTimeout(update, 1000/40);
 }
@@ -52,11 +61,12 @@ function resetTransform() {
 }
 
 function drawState() {
-  drawRocket(1);
+
   var scale = (gameHeight / 2 - planetPeek) / nearestPlanetDistance();
   if (scale > 1) {
     scale = 1;
   }
+  drawRocket(scale);
   var index;
   for (index=0; index < gameState.planets.length; index++) {
     resetTransform();
@@ -78,7 +88,7 @@ function drawRocket(scale) {
   ctx.lineTo(0, -20 * scale);
   ctx.rotate(-1 * gameState.rocket.dir);
   ctx.moveTo(0, 0);
-  ctx.lineTo(rocket.velocity.x, rocket.velocity.y);
+  ctx.lineTo(rocket.velocity.x * scale, rocket.velocity.y * scale);
   ctx.stroke();
 }
 
