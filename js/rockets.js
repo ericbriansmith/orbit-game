@@ -44,7 +44,7 @@ function update() {
   lastTime = now;
   gameState.rocket.move(timeDiff/1000);
   drawState();
-  setTimeout(update, 1000/30);
+  setTimeout(update, 1000/40);
 }
 
 function resetTransform() {
@@ -52,29 +52,39 @@ function resetTransform() {
 }
 
 function drawState() {
-  ctx.translate(gameWidth / 2, gameHeight / 2);
-  ctx.rotate(gameState.rocket.dir);
-  ctx.beginPath();
+  drawRocket(1);
   var scale = (gameHeight / 2 - planetPeek) / nearestPlanetDistance();
   if (scale > 1) {
     scale = 1;
   }
-  ctx.moveTo(0, -20 * scale);
-  ctx.lineTo(10 * scale, 10 * scale);
-  ctx.lineTo(-10 * scale, 10 * scale);
-  ctx.lineTo(0, -20 * scale);
-  ctx.stroke();
-  ctx.rotate(-1 * gameState.rocket.dir);
   var index;
   for (index=0; index < gameState.planets.length; index++) {
     resetTransform();
     var planet = gameState.planets[index];
-
     ctx.translate(gameWidth / 2, gameHeight / 2);
     ctx.translate(scale * (gameState.rocket.x * -1 + planet.x), scale * (gameState.rocket.y * -1 + planet.y));
     drawCircle(0, 0, planet.radius * scale);
   }
 }
+
+function drawRocket(scale) {
+  var rocket = gameState.rocket;
+  ctx.translate(gameWidth / 2, gameHeight / 2);
+  ctx.rotate(gameState.rocket.dir);
+  ctx.beginPath();
+  ctx.moveTo(0, -20 * scale);
+  ctx.lineTo(10 * scale, 10 * scale);
+  ctx.lineTo(-10 * scale, 10 * scale);
+  ctx.lineTo(0, -20 * scale);
+  ctx.rotate(-1 * gameState.rocket.dir);
+  ctx.moveTo(0, 0);
+  ctx.lineTo(rocket.velocity.x, rocket.velocity.y);
+  ctx.stroke();
+}
+
+// function drawCloud(x,y) {
+//   ctx.strokeRect(x,y, 20, 20);
+// }
 
 function drawCircle(x, y, radius) {
   ctx.beginPath();

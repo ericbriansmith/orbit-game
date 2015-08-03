@@ -41,24 +41,26 @@ function gravityAcceleration(planetMass, distance) {
 
 function Rocket() {
   var rocket = {
-    x: 6371490,
-    y: 0,
+    x: 100,
+    y: 6371490,
     dir: Math.PI / 2,
     dirChangeAmount: 1,
-    velocity: { x: 0, y:-20 },
+    velocity: { x: 0, y:0, total: 0 },
     maxThrust: 100,
     // throttle: 0, //0 to 100
     move: function(time) {
       this.x += this.velocity.x * time;
       this.y += this.velocity.y * time;
       var distanceResult = getDistanceToPlanetSurface(gameState.planets[0]);
+      console.log("alt=" + distanceResult.distance);
       var accel = gravityAcceleration(gameState.planets[0].mass,distanceResult.distToCenter);
       this.velocity.x -= distanceResult.x * accel * time;
       this.velocity.y -= distanceResult.y * accel * time;
       if (gameState.input.spacebar) {
-        this.velocity.y += Math.cos(this.dir) * this.maxThrust * time;
+        this.velocity.y -= Math.cos(this.dir) * this.maxThrust * time;
         this.velocity.x += Math.sin(this.dir) * this.maxThrust * time;
       }
+      this.velocity.total = Math.sqrt(Math.pow(this.velocity.x, 2) + Math.pow(this.velocity.y, 2));
       if (gameState.input.left) {
         this.dir -= this.dirChangeAmount * time;
       } else if (gameState.input.right) {
