@@ -5,7 +5,7 @@ var gravity = 9.8;
 function newGame() {
   gameState = {
     planets: [
-      new Planet("earth", 0, 0, 2000,5.97 * Math.pow(10, 18)),
+      new Planet("earth", 0, 0, 5000,40 * Math.pow(10, 18)),
       new Planet("mars", 0, -6371390 * 4, 6371390, 5.97 * Math.pow(10, 24))
     ],
     rocket: Rocket(),
@@ -48,7 +48,7 @@ function gravityAcceleration(planetMass, distance) {
 function Rocket() {
   var rocket = {
     x: 500,
-    y: 3000,
+    y: 6000,
     dir: Math.PI / 2,
     dirChangeAmount: 1,
     nearestPlanet: null,

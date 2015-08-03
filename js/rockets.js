@@ -34,6 +34,7 @@ function setupInput() {
     }
   });
   document.addEventListener("keypress", function(event) {
+    //var x = event.which || event.keyCode; for firefox support
     if (event.keyCode == 44) {
       if (gameState.timeScale >= 2) {
         gameState.timeScale /= 2;
@@ -104,9 +105,21 @@ function drawRocket(scale) {
 // }
 
 function drawCircle(x, y, radius) {
-  ctx.beginPath();
-  ctx.arc(x,y,radius,0,2*Math.PI);
-  ctx.stroke();
+  var i;
+  var seg = 2 * Math.PI / 10;
+  ctx.strokeStyle="#ff0000";
+  for (i=0; i < 2*Math.PI; i+=seg) {
+    if (ctx.strokeStyle == "#ff0000") {
+      ctx.strokeStyle="#000000";
+    } else {
+      ctx.strokeStyle="#ff0000";
+    }
+
+    ctx.beginPath();
+    ctx.arc(x, y, radius, i, i + seg);
+    ctx.stroke();
+  }
+  ctx.strokeStyle="#000000"
 }
 
 function fixSize() {
