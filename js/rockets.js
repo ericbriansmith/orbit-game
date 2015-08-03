@@ -7,13 +7,36 @@ var planetPeek = 50;
 
 function start() {
   canvas = $("#main")[0];
+  setupInput();
   newGame();
   lastTime = new Date().getTime();
   ctx = canvas.getContext("2d");
   update();
 }
 
+function setupInput() {
+  document.addEventListener("keydown", function(event) {
+    if (event.keyCode == 32) {
+      gameState.input.spacebar = true;
+    } else if (event.keyCode == 37) {
+      gameState.input.left = true;
+    } else if (event.keyCode == 39) {
+      gameState.input.right = true;
+    }
+  });
+  document.addEventListener("keyup", function(event) {
+    if (event.keyCode == 32) {
+      gameState.input.spacebar = false;
+    } else if (event.keyCode == 37) {
+      gameState.input.left = false;
+    } else if (event.keyCode == 39) {
+      gameState.input.right = false;
+    }
+  });
+}
+
 function update() {
+
   resetTransform();
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   var now = new Date().getTime();
@@ -30,7 +53,7 @@ function resetTransform() {
 
 function drawState() {
   ctx.translate(gameWidth / 2, gameHeight / 2);
-  ctx.rotate(gameState.rocket.dir*Math.PI/180);
+  ctx.rotate(gameState.rocket.dir);
   ctx.beginPath();
   var scale = (gameHeight / 2 - planetPeek) / nearestPlanetDistance();
   if (scale > 1) {
@@ -41,7 +64,7 @@ function drawState() {
   ctx.lineTo(-10 * scale, 10 * scale);
   ctx.lineTo(0, -20 * scale);
   ctx.stroke();
-  ctx.rotate(gameState.rocket.dir*Math.PI/-180);
+  ctx.rotate(-1 * gameState.rocket.dir);
   var index;
   for (index=0; index < gameState.planets.length; index++) {
     resetTransform();

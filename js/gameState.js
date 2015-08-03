@@ -8,7 +8,8 @@ function newGame() {
       new Planet("earth", 0, 0, 6371390,5.97 * Math.pow(10, 24)),
       new Planet("mars", 0, -6371390 * 4, 6371390, 5.97 * Math.pow(10, 24))
     ],
-    rocket: Rocket()
+    rocket: Rocket(),
+    input: {spacebar: false, left: false, right: false}
   };
 }
 
@@ -40,12 +41,13 @@ function gravityAcceleration(planetMass, distance) {
 
 function Rocket() {
   var rocket = {
-    x: 0,
-    y: -6371490,
-    dir: 0,
+    x: 6371490,
+    y: 0,
+    dir: Math.PI / 2,
+    dirChangeAmount: 1,
     velocity: { x: 0, y:-20 },
     maxThrust: 100,
-    throttle: 0, //0 to 100
+    // throttle: 0, //0 to 100
     move: function(time) {
       this.x += this.velocity.x * time;
       this.y += this.velocity.y * time;
@@ -53,6 +55,15 @@ function Rocket() {
       var accel = gravityAcceleration(gameState.planets[0].mass,distanceResult.distToCenter);
       this.velocity.x -= distanceResult.x * accel * time;
       this.velocity.y -= distanceResult.y * accel * time;
+      if (gameState.input.spacebar) {
+        this.velocity.y += Math.cos(this.dir) * this.maxThrust * time;
+        this.velocity.x += Math.sin(this.dir) * this.maxThrust * time;
+      }
+      if (gameState.input.left) {
+        this.dir -= this.dirChangeAmount * time;
+      } else if (gameState.input.right) {
+        this.dir += this.dirChangeAmount * time;
+      }
     }
   };
   return rocket;
