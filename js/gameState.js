@@ -10,7 +10,8 @@ function newGame() {
     ],
     rocket: Rocket(),
     input: {spacebar: false, left: false, right: false},
-    timeScale: 1
+    timeScale: 1,
+    zoomMode: 0 //0 for normal, 1 on ship
   };
 }
 

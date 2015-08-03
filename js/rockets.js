@@ -42,6 +42,12 @@ function setupInput() {
       if (gameState.timeScale < 20) {
         gameState.timeScale *= 2;
       }
+    } else if (event.keyCode == 122) {
+      if (gameState.zoomMode == 0) {
+        gameState.zoomMode = 1;
+      } else if (gameState.zoomMode == 1) {
+        gameState.zoomMode = 0;
+      }
     }
   });
 }
@@ -64,7 +70,7 @@ function resetTransform() {
 function drawState() {
 
   var scale = (gameHeight / 2 - planetPeek) / gameState.rocket.nearestPlanetDistanceResult.distance;
-  if (scale > 1) {
+  if (scale > 1 || gameState.zoomMode == 1) {
     scale = 1;
   }
   drawRocket(scale);
