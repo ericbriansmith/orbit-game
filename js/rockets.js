@@ -47,7 +47,6 @@ function setupInput() {
 }
 
 function update() {
-
   resetTransform();
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   var now = new Date().getTime();
@@ -55,7 +54,7 @@ function update() {
   lastTime = now;
   gameState.rocket.move(gameState.timeScale * timeDiff/1000);
   drawState();
-  setTimeout(update, 1000/40);
+  setTimeout(update, 1000/60);
 }
 
 function resetTransform() {
