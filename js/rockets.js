@@ -70,11 +70,24 @@ function update() {
   // setTimeout(update, 10);
 }
 
-function drawMoons(scale) {
+function drawBodies(scale) {
   var i;
-  for (i = 0; i < gameState.moons.length; i++) {
-    var moon = gameState.moons[i];
-    drawCircle(moon.x, moon.y, moon.radius, scale);
+  for (i = 0; i < gameState.bodies.length; i++) {
+    var body = gameState.bodies[i];
+    drawCircle(body.x, body.y, body.radius, scale);
+    drawLaunchpads(body, scale);
+  }
+}
+
+var launchPadSize = 50;
+function drawLaunchpads(body, scale) {
+  var i;
+  for (i = 0; i < body.launchpads.length; i++) {
+    var launchpad = body.launchpads[i];
+    resetTransform();
+    ctx.translate(gameWidth / 2, gameHeight / 2);
+    ctx.translate(scale * (gameState.rocket.x * -1 + launchpad.x), scale * (gameState.rocket.y * -1 + launchpad.y));
+    ctx.fillRect(0, 0, launchPadSize * scale, launchPadSize * scale);
   }
 }
 
@@ -89,12 +102,7 @@ function drawState() {
     scale = 1;
   }
   drawRocket(scale);
-  var index;
-  for (index=0; index < gameState.planets.length; index++) {
-    var planet = gameState.planets[index];
-    drawCircle(planet.x, planet.y, planet.radius, scale);
-  }
-  drawMoons(scale);
+  drawBodies(scale);
 }
 
 function drawStatus() {
@@ -103,7 +111,11 @@ function drawStatus() {
   ctx.font = "15px Arial";
   ctx.fillText("Fuel: " + Math.round(gameState.rocket.fuel * 100) / 100, 1, index);
   index += lineJump;
-  ctx.fillText("Velocity: " + metersOrKm(gameState.rocket.velocity.total, "/s"), 1, index);
+  var velocity = gameState.rocket.velocity.total;
+  if (gameState.rocket.collided) {
+    velocity = 0
+  }
+  ctx.fillText("Velocity: " + metersOrKm(velocity, "/s"), 1, index);
   index += lineJump;
   ctx.fillText("Altitude: " + gameState.rocket.nearestPlanet.name + " " + metersOrKm(gameState.rocket.nearestPlanetDistanceResult.distance, ""), 1, index);
   index += lineJump;
@@ -120,6 +132,7 @@ function metersOrKm(value,tag) {
 
 function drawRocket(scale) {
   var rocket = gameState.rocket;
+
   ctx.translate(gameWidth / 2, gameHeight / 2);
   ctx.rotate(gameState.rocket.dir);
   ctx.beginPath();
@@ -130,7 +143,11 @@ function drawRocket(scale) {
   ctx.rotate(-1 * gameState.rocket.dir);
   ctx.moveTo(0, 0);
   ctx.lineTo(rocket.velocity.x, rocket.velocity.y);
-  ctx.stroke();
+  if (rocket.crashed) {
+    ctx.fill();
+  } else {
+    ctx.stroke();
+  }
 }
 
 // function drawCloud(x,y) {

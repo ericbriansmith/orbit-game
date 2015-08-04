@@ -5,9 +5,10 @@ var g = 6.67 * (Math.pow(10, -11))
 function newGame() {
   gameState = {
     planets: [
-      new Planet("earth", 0, 0, 5000,40 * Math.pow(10, 18)),
+      new Planet("earth", 0, 0, 6371390, 5.97 * Math.pow(10, 24)),
       new Planet("mars", 0, -6371390 * 4, 6371390, 5.97 * Math.pow(10, 24))
     ],
+    bodies: [], //all moons and planets
     moons: [],
     rocket: Rocket(),
     input: {spacebar: false, left: false, right: false},
@@ -16,6 +17,15 @@ function newGame() {
   };
   var orbit = Math.sqrt(g * gameState.planets[0].mass / 10000);
   gameState.moons[0] = new Moon(10000, 0, 0, orbit, 1000, 10, gameState.planets[0]);
+
+  gameState.bodies = gameState.planets.concat(gameState.moons);
+  addLaunchpad(gameState.planets[0], 0);
+}
+
+function addLaunchpad(body, direction) {
+  var x = body.radius * Math.cos(direction);
+  var y = body.radius * Math.sin(direction);
+  body.launchpads[body.launchpads.length] = { x: x, y: y, direction: direction };
 }
 
 function nearestPlanetDistance() {
@@ -53,35 +63,62 @@ function gravityAcceleration(planetMass, distance) {
 
 function Rocket() {
   var rocket = {
-    x: 10000,
-    y: 6000,
+    x: 6371390 + 20,
+    y: 0,
+    lastX: 0,
+    lastY: 0,
+    collided: false,
     dir: Math.PI / 2,
     dirChangeAmount: 1,
     nearestPlanet: null,
     nearestPlanetDistanceResult: null,
-    fuel: 100, //seconds of fuel
+    fuel: 500, //seconds of fuel
     velocity: { x: 0, y:0, total: 0 },
     maxThrust: 100,
+    maxImpactVelocity: 10,
+    crashed: false,
     // throttle: 0, //0 to 100
     move: function(time) {
-      this.x += this.velocity.x * time;
-      this.y += this.velocity.y * time;
       var nearestPlanetResult = nearestPlanetDistance();
       this.nearestPlanet = nearestPlanetResult.planet;
       this.nearestPlanetDistanceResult = nearestPlanetResult.distanceResult;
+      this.detectCollision();
+      if (this.collided) {
+        if (this.velocity.total > 10) {
+          console.log(this.velocity.total);
+          this.crashed = true;
+        }
+        this.velocity = {x: 0, y: 0, total: 0};
+        this.x = this.lastX;
+        this.y = this.lastY;
+      }
       var accel = gravityAcceleration(this.nearestPlanet.mass, this.nearestPlanetDistanceResult.distToCenter);
-      this.velocity.x -= this.nearestPlanetDistanceResult.x * accel * time;
-      this.velocity.y -= this.nearestPlanetDistanceResult.y * accel * time;
+      var accelX = this.nearestPlanetDistanceResult.x * accel * time;
+      var accelY = this.nearestPlanetDistanceResult.y * accel * time;
+
       if (gameState.input.spacebar && this.fuel > 0) {
         this.fuel -= time;
-        this.velocity.y -= Math.cos(this.dir) * this.maxThrust * time;
-        this.velocity.x += Math.sin(this.dir) * this.maxThrust * time;
+        accelY += Math.cos(this.dir) * this.maxThrust * time;
+        accelX -= Math.sin(this.dir) * this.maxThrust * time;
       }
+      this.velocity.x -= accelX;
+      this.velocity.y -= accelY;
       this.velocity.total = Math.sqrt(Math.pow(this.velocity.x, 2) + Math.pow(this.velocity.y, 2));
+      this.lastX = this.x;
+      this.lastY = this.y;
+      this.x += this.velocity.x * time;
+      this.y += this.velocity.y * time;
       if (gameState.input.left) {
         this.dir -= this.dirChangeAmount * time;
       } else if (gameState.input.right) {
         this.dir += this.dirChangeAmount * time;
+      }
+    },
+    detectCollision: function() {
+      if (this.nearestPlanetDistanceResult.distance < 10) {
+        this.collided = true;
+      } else {
+        this.collided = false;
       }
     }
   };
@@ -93,6 +130,7 @@ function Moon (x,y,xVel,yVel,radius,mass,planet) {
   this.y = y;
   this.radius = radius;
   this.mass = mass;
+  this.launchpads = [];
   this.planet = planet;
   this.velocity =  { x: xVel, y: yVel };
   this.move = function(time) {
@@ -110,6 +148,7 @@ function Planet (name,x,y,radius,mass) {
   this.name = name;
   this.x=x;
   this.y=y;
+  this.launchpads = [];
   this.radius=radius;
   this.mass=mass;
 }
