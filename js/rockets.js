@@ -59,6 +59,10 @@ function update() {
   var now = new Date().getTime();
   var timeDiff = now - lastTime;
   lastTime = now;
+  if (timeDiff > 500) {
+    //happens when losing focus for a while. probably should implement a real pause feature
+    timeDiff = 0;
+  }
   var tick = gameState.timeScale * timeDiff/1000;
   gameState.rocket.move(tick);
 
@@ -96,13 +100,14 @@ function resetTransform() {
 }
 
 function drawState() {
-  drawStatus();
   var scale = (gameHeight / 2 - planetPeek) / gameState.rocket.nearestPlanetDistanceResult.distance;
   if (scale > 1 || gameState.zoomMode == 1) {
     scale = 1;
   }
   drawRocket(scale);
   drawBodies(scale);
+  resetTransform();
+  drawStatus();
 }
 
 function drawStatus() {
@@ -155,24 +160,30 @@ function drawRocket(scale) {
 // }
 
 function drawCircle(x, y, radius, scale) {
+  var lineWidth = 1000 * scale;
+  if (lineWidth < 5) {
+    lineWidth = 5;
+  }
   resetTransform();
   ctx.translate(gameWidth / 2, gameHeight / 2);
   ctx.translate(scale * (gameState.rocket.x * -1 + x), scale * (gameState.rocket.y * -1 + y));
   var i;
   var seg = 2 * Math.PI / 100;
-  ctx.strokeStyle="#ff0000";
+  ctx.lineWidth = lineWidth;
+  ctx.strokeStyle="#00804c";
   for (i=0; i < 2*Math.PI; i+=seg) {
-    if (ctx.strokeStyle == "#ff0000") {
+    if (ctx.strokeStyle == "#00804c") {
       ctx.strokeStyle="#000000";
     } else {
-      ctx.strokeStyle="#ff0000";
+      ctx.strokeStyle="#00804c";
     }
 
     ctx.beginPath();
-    ctx.arc(0, 0, radius * scale, i, i + seg);
+    ctx.arc(0, 0, (radius * scale - lineWidth/2) , i, i + seg);
     ctx.stroke();
   }
-  ctx.strokeStyle="#000000"
+  ctx.strokeStyle="#000000";
+  ctx.lineWidth = 2;
 }
 
 function fixSize() {

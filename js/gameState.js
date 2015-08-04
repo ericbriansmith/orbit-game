@@ -63,8 +63,8 @@ function gravityAcceleration(planetMass, distance) {
 
 function Rocket() {
   var rocket = {
-    x: 6371390 + 20,
-    y: 0,
+    x: 6371390 + 10,
+    y: -20,
     lastX: 0,
     lastY: 0,
     collided: false,
@@ -74,7 +74,7 @@ function Rocket() {
     nearestPlanetDistanceResult: null,
     fuel: 500, //seconds of fuel
     velocity: { x: 0, y:0, total: 0 },
-    maxThrust: 100,
+    maxThrust: 20,
     maxImpactVelocity: 10,
     crashed: false,
     // throttle: 0, //0 to 100
