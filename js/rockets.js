@@ -1,7 +1,7 @@
 var ctx;
 var canvas;
 var gameWidth = 800;
-var gameHeight = 800;
+var gameHeight = 700;
 var lastTime;
 var planetPeek = 100;
 
@@ -11,7 +11,7 @@ function start() {
   newGame();
   lastTime = new Date().getTime();
   ctx = canvas.getContext("2d");
-  update();
+  setInterval(update, 1000/60);
 }
 
 function setupInput() {
@@ -59,9 +59,23 @@ function update() {
   var now = new Date().getTime();
   var timeDiff = now - lastTime;
   lastTime = now;
-  gameState.rocket.move(gameState.timeScale * timeDiff/1000);
+  var tick = gameState.timeScale * timeDiff/1000;
+  gameState.rocket.move(tick);
+
   drawState();
-  setTimeout(update, 1000/60);
+  var i;
+  for (i = 0; i < gameState.moons.length; i++) {
+    gameState.moons[i].move(tick);
+  }
+  // setTimeout(update, 10);
+}
+
+function drawMoons(scale) {
+  var i;
+  for (i = 0; i < gameState.moons.length; i++) {
+    var moon = gameState.moons[i];
+    drawCircle(moon.x, moon.y, moon.radius, scale);
+  }
 }
 
 function resetTransform() {
@@ -69,7 +83,7 @@ function resetTransform() {
 }
 
 function drawState() {
-
+  drawStatus();
   var scale = (gameHeight / 2 - planetPeek) / gameState.rocket.nearestPlanetDistanceResult.distance;
   if (scale > 1 || gameState.zoomMode == 1) {
     scale = 1;
@@ -77,11 +91,30 @@ function drawState() {
   drawRocket(scale);
   var index;
   for (index=0; index < gameState.planets.length; index++) {
-    resetTransform();
     var planet = gameState.planets[index];
-    ctx.translate(gameWidth / 2, gameHeight / 2);
-    ctx.translate(scale * (gameState.rocket.x * -1 + planet.x), scale * (gameState.rocket.y * -1 + planet.y));
-    drawCircle(0, 0, planet.radius * scale);
+    drawCircle(planet.x, planet.y, planet.radius, scale);
+  }
+  drawMoons(scale);
+}
+
+function drawStatus() {
+  var lineJump = 20;
+  var index = lineJump;
+  ctx.font = "15px Arial";
+  ctx.fillText("Fuel: " + Math.round(gameState.rocket.fuel * 100) / 100, 1, index);
+  index += lineJump;
+  ctx.fillText("Velocity: " + metersOrKm(gameState.rocket.velocity.total, "/s"), 1, index);
+  index += lineJump;
+  ctx.fillText("Altitude: " + gameState.rocket.nearestPlanet.name + " " + metersOrKm(gameState.rocket.nearestPlanetDistanceResult.distance, ""), 1, index);
+  index += lineJump;
+  ctx.fillText("Time stretch: " + gameState.timeScale, 1, index);
+}
+
+function metersOrKm(value,tag) {
+  if (value > 1000) {
+    return "" + (Math.round((value / 1000) * 100) / 100) + "km" + tag;
+  } else {
+    return "" + Math.round(value) + "m" + tag;
   }
 }
 
@@ -104,9 +137,12 @@ function drawRocket(scale) {
 //   ctx.strokeRect(x,y, 20, 20);
 // }
 
-function drawCircle(x, y, radius) {
+function drawCircle(x, y, radius, scale) {
+  resetTransform();
+  ctx.translate(gameWidth / 2, gameHeight / 2);
+  ctx.translate(scale * (gameState.rocket.x * -1 + x), scale * (gameState.rocket.y * -1 + y));
   var i;
-  var seg = 2 * Math.PI / 10;
+  var seg = 2 * Math.PI / 100;
   ctx.strokeStyle="#ff0000";
   for (i=0; i < 2*Math.PI; i+=seg) {
     if (ctx.strokeStyle == "#ff0000") {
@@ -116,7 +152,7 @@ function drawCircle(x, y, radius) {
     }
 
     ctx.beginPath();
-    ctx.arc(x, y, radius, i, i + seg);
+    ctx.arc(0, 0, radius * scale, i, i + seg);
     ctx.stroke();
   }
   ctx.strokeStyle="#000000"
