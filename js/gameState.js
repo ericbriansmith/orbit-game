@@ -1,6 +1,6 @@
 
 var gameState;
-var gravity = 9.8;
+var g = 6.67 * (Math.pow(10, -11))
 
 function newGame() {
   gameState = {
@@ -14,7 +14,8 @@ function newGame() {
     timeScale: 1,
     zoomMode: 0 //0 for normal, 1 on ship
   };
-  gameState.moons[0] = new Moon(10000, 0, 1000, 10, gameState.planets[0]);
+  var orbit = Math.sqrt(g * gameState.planets[0].mass / 10000);
+  gameState.moons[0] = new Moon(10000, 0, 0, orbit, 1000, 10, gameState.planets[0]);
 }
 
 function nearestPlanetDistance() {
@@ -38,8 +39,8 @@ function getDistanceToPlanetSurfaceForRocket(planet) {
 }
 
 function getDistanceToPlanetSurface(x,y,planet) {
-  var xDiff = gameState.rocket.x - planet.x;
-  var yDiff = gameState.rocket.y - planet.y;
+  var xDiff = x - planet.x;
+  var yDiff = y - planet.y;
   var distToCenter = Math.sqrt(Math.pow(xDiff, 2) + Math.pow(yDiff, 2));
   var distance = distToCenter - planet.radius;
 
@@ -47,7 +48,6 @@ function getDistanceToPlanetSurface(x,y,planet) {
 }
 
 function gravityAcceleration(planetMass, distance) {
-  var g = 6.67 * (Math.pow(10, -11))
   return (g * planetMass) / Math.pow(distance, 2)
 }
 
@@ -88,13 +88,13 @@ function Rocket() {
   return rocket;
 }
 
-function Moon (x,y,radius,mass,planet) {
+function Moon (x,y,xVel,yVel,radius,mass,planet) {
   this.x = x;
   this.y = y;
   this.radius = radius;
   this.mass = mass;
   this.planet = planet;
-  this.velocity =  { x: 0, y: 0 };
+  this.velocity =  { x: xVel, y: yVel };
   this.move = function(time) {
     this.x += this.velocity.x * time;
     this.y += this.velocity.y * time;
