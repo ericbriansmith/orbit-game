@@ -5,6 +5,8 @@ var gameHeight = 700;
 var lastTime;
 var planetPeek = 100;
 
+var updateCount = 0;
+
 function start() {
   canvas = $("#main")[0];
   setupInput();
@@ -46,9 +48,11 @@ function setupInput() {
     } else if (event.keyCode == 122) {
       if (gameState.zoomMode == 0) {
         gameState.zoomMode = 1;
-      } else if (gameState.zoomMode == 1) {
+      } else {
         gameState.zoomMode = 0;
       }
+    } else if (event.keyCode == 97) {
+      gameState.zoomMode = 2;
     }
   });
 }
@@ -65,13 +69,23 @@ function update() {
   }
   var tick = gameState.timeScale * timeDiff/1000;
   gameState.rocket.move(tick);
+  if (updateCount == 0) {
+    updatePeriodicCalculations();
+  }
 
   drawState();
   var i;
   for (i = 0; i < gameState.moons.length; i++) {
     gameState.moons[i].move(tick);
   }
+  updateCount = (updateCount + 1) % 30;
   // setTimeout(update, 10);
+}
+
+var speedToKeepOrbit = 0;
+
+function updatePeriodicCalculations() {
+  speedToKeepOrbit = Math.sqrt(g * gameState.rocket.nearestPlanet.mass / gameState.rocket.nearestPlanetDistanceResult.distance);
 }
 
 function drawBodies(scale) {
@@ -104,6 +118,9 @@ function drawState() {
   if (scale > 1 || gameState.zoomMode == 1) {
     scale = 1;
   }
+  if (gameState.zoomMode == 2) {
+    scale = 0.00001;
+  }
   drawRocket(scale);
   drawBodies(scale);
   resetTransform();
@@ -112,19 +129,22 @@ function drawState() {
 
 function drawStatus() {
   var lineJump = 20;
+  var textX = 2;
   var index = lineJump;
   ctx.font = "15px Arial";
-  ctx.fillText("Fuel: " + Math.round(gameState.rocket.fuel * 100) / 100, 1, index);
+  ctx.fillText("Fuel: " + Math.round(gameState.rocket.fuel * 100) / 100, textX, index);
   index += lineJump;
   var velocity = gameState.rocket.velocity.total;
   if (gameState.rocket.collided) {
     velocity = 0
   }
-  ctx.fillText("Velocity: " + metersOrKm(velocity, "/s"), 1, index);
+  ctx.fillText("Velocity: " + metersOrKm(velocity, "/s"), textX, index);
   index += lineJump;
-  ctx.fillText("Altitude: " + gameState.rocket.nearestPlanet.name + " " + metersOrKm(gameState.rocket.nearestPlanetDistanceResult.distance, ""), 1, index);
+  ctx.fillText("Altitude: " + gameState.rocket.nearestPlanet.name + " " + metersOrKm(gameState.rocket.nearestPlanetDistanceResult.distance, ""), textX, index);
   index += lineJump;
-  ctx.fillText("Time stretch: " + gameState.timeScale, 1, index);
+  ctx.fillText("Time stretch: " + gameState.timeScale, textX, index);
+  index += lineJump;
+  ctx.fillText("Speed to hold orbit: " + metersOrKm(speedToKeepOrbit, "/s"), textX, index);
 }
 
 function metersOrKm(value,tag) {
