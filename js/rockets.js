@@ -85,7 +85,7 @@ function update() {
 var speedToKeepOrbit = 0;
 
 function updatePeriodicCalculations() {
-  speedToKeepOrbit = Math.sqrt(g * gameState.rocket.nearestPlanet.mass / gameState.rocket.nearestPlanetDistanceResult.distance);
+  speedToKeepOrbit = Math.sqrt(g * gameState.rocket.nearestPlanet.mass / gameState.rocket.nearestPlanetDistanceResult.distToCenter);
 }
 
 function drawBodies(scale) {
@@ -140,16 +140,16 @@ function drawStatus() {
   }
   ctx.fillText("Velocity: " + metersOrKm(velocity, "/s"), textX, index);
   index += lineJump;
+  ctx.fillText("Speed to hold orbit: " + metersOrKm(speedToKeepOrbit, "/s"), textX, index);
+  index += lineJump;
   ctx.fillText("Altitude: " + gameState.rocket.nearestPlanet.name + " " + metersOrKm(gameState.rocket.nearestPlanetDistanceResult.distance, ""), textX, index);
   index += lineJump;
   ctx.fillText("Time stretch: " + gameState.timeScale, textX, index);
-  index += lineJump;
-  ctx.fillText("Speed to hold orbit: " + metersOrKm(speedToKeepOrbit, "/s"), textX, index);
 }
 
 function metersOrKm(value,tag) {
   if (value > 1000) {
-    return "" + (Math.round((value / 1000) * 100) / 100) + "km" + tag;
+    return "" + (Math.round((value / 1000) * 1000) / 1000) + "km" + tag;
   } else {
     return "" + Math.round(value) + "m" + tag;
   }
@@ -193,7 +193,7 @@ function drawCircle(x, y, radius, scale) {
   ctx.strokeStyle="#00804c";
   for (i=0; i < 2*Math.PI; i+=seg) {
     if (ctx.strokeStyle == "#00804c") {
-      ctx.strokeStyle="#000000";
+      ctx.strokeStyle="#996633";
     } else {
       ctx.strokeStyle="#00804c";
     }

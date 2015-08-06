@@ -6,8 +6,8 @@ var g = 6.67 * (Math.pow(10, -11))
 function newGame() {
   gameState = {
     planets: [
-      new Planet("earth", 0, 0, 6371390, 3.97 * Math.pow(10, 20)),
-      new Planet("mars", 0, -6371390 * 4, 6371390, 5.97 * Math.pow(10, 24))
+      new Planet("Earth", 0, 0, 6371390, 5.97 * Math.pow(10, 24)),
+      new Planet("Mercury", 0, -6371390 * 4, 2439770, 3.285 * Math.pow(10, 23))
     ],
     bodies: [], //all moons and planets
     moons: [],
@@ -64,8 +64,8 @@ function gravityAcceleration(planetMass, distance) {
 
 function Rocket() {
   var rocket = {
-    x: 6371390 + 10,
-    y: -20,
+    x: 2439770 + 10,
+    y: -6371390 * 4,
     lastX: 0,
     lastY: 0,
     collided: false,
