@@ -85,7 +85,7 @@ function update() {
 var speedToKeepOrbit = 0;
 
 function updatePeriodicCalculations() {
-  speedToKeepOrbit = Math.sqrt(g * gameState.rocket.nearestPlanet.mass / gameState.rocket.nearestPlanetDistanceResult.distToCenter);
+  speedToKeepOrbit = Math.sqrt(g * gameState.rocket.nearestBody.mass / gameState.rocket.nearestBodyDistanceResult.distToCenter);
 }
 
 function drawBodies(scale) {
@@ -114,7 +114,7 @@ function resetTransform() {
 }
 
 function drawState() {
-  var scale = (gameHeight / 2 - planetPeek) / gameState.rocket.nearestPlanetDistanceResult.distance;
+  var scale = (gameHeight / 2 - planetPeek) / gameState.rocket.nearestBodyDistanceResult.distance;
   if (scale > 1 || gameState.zoomMode == 1) {
     scale = 1;
   }
@@ -142,7 +142,7 @@ function drawStatus() {
   index += lineJump;
   ctx.fillText("Speed to hold orbit: " + metersOrKm(speedToKeepOrbit, "/s"), textX, index);
   index += lineJump;
-  ctx.fillText("Altitude: " + gameState.rocket.nearestPlanet.name + " " + metersOrKm(gameState.rocket.nearestPlanetDistanceResult.distance, ""), textX, index);
+  ctx.fillText("Altitude: " + gameState.rocket.nearestBody.name + " " + metersOrKm(gameState.rocket.nearestBodyDistanceResult.distance, ""), textX, index);
   index += lineJump;
   ctx.fillText("Time stretch: " + gameState.timeScale, textX, index);
 }
@@ -180,9 +180,9 @@ function drawRocket(scale) {
 // }
 
 function drawCircle(x, y, radius, scale) {
-  var lineWidth = 1000 * scale;
-  if (lineWidth < 5) {
-    lineWidth = 5;
+  var lineWidth = 10 * scale;
+  if (lineWidth < 1) {
+    lineWidth = 1;
   }
   resetTransform();
   ctx.translate(gameWidth / 2, gameHeight / 2);
@@ -199,7 +199,9 @@ function drawCircle(x, y, radius, scale) {
     }
 
     ctx.beginPath();
-    ctx.arc(0, 0, (radius * scale - lineWidth/2) , i, i + seg);
+    var circleRad = radius * scale - lineWidth/2;
+    if (circleRad < 1) {circleRad = 1;}
+    ctx.arc(0, 0,  circleRad, i, i + seg);
     ctx.stroke();
   }
   ctx.strokeStyle="#000000";
