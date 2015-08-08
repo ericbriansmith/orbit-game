@@ -85,7 +85,7 @@ function update() {
 var speedToKeepOrbit = 0;
 
 function updatePeriodicCalculations() {
-  speedToKeepOrbit = Math.sqrt(g * gameState.rocket.nearestBody.mass / gameState.rocket.nearestBodyDistanceResult.distToCenter);
+  speedToKeepOrbit = Math.sqrt(g * gameState.rocket.nearestBody.mass / gameState.rocket.nearestBody.rocketDistanceResult.distToCenter);
 }
 
 function drawBodies(scale) {
@@ -114,7 +114,7 @@ function resetTransform() {
 }
 
 function drawState() {
-  var scale = (gameHeight / 2 - planetPeek) / gameState.rocket.nearestBodyDistanceResult.distance;
+  var scale = (gameHeight / 2 - planetPeek) / gameState.rocket.nearestBody.rocketDistanceResult.distance;
   if (scale > 1 || gameState.zoomMode == 1) {
     scale = 1;
   }
@@ -142,7 +142,7 @@ function drawStatus() {
   index += lineJump;
   ctx.fillText("Speed to hold orbit: " + metersOrKm(speedToKeepOrbit, "/s"), textX, index);
   index += lineJump;
-  ctx.fillText("Altitude: " + gameState.rocket.nearestBody.name + " " + metersOrKm(gameState.rocket.nearestBodyDistanceResult.distance, ""), textX, index);
+  ctx.fillText("Altitude: " + gameState.rocket.nearestBody.name + " " + metersOrKm(gameState.rocket.nearestBody.rocketDistanceResult.distance, ""), textX, index);
   index += lineJump;
   ctx.fillText("Time stretch: " + gameState.timeScale, textX, index);
 }
