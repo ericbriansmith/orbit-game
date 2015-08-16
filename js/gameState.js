@@ -17,7 +17,8 @@ function newGame() {
     timeScale: 1,
     zoomMode: 0 //0 for normal, 1 on ship
   };
-  gameState.moons[0] = new Moon("moon", 500, 100, 1 * Math.pow(10, 15), gameState.planets[2]);
+  // gameState.moons[0] = new Moon("moon", 500, 100, 1 * Math.pow(10, 15), gameState.planets[2]);
+  gameState.moons[0] = new Moon("Moon", 385000000 - 6371390, 1737100, 7.3477 * Math.pow(10, 22), gameState.planets[0]);
 
   gameState.bodies = gameState.planets.concat(gameState.moons);
   addLaunchpad(gameState.planets[0], 0);
@@ -64,8 +65,8 @@ function gravityAcceleration(bodyMass, distance) {
 
 function Rocket() {
   var rocket = {
-    x: 1000 + 20,
-    y: 0,
+    x: 6371390 + 20,
+    y: 6371390 * 4,
     lastX: 0,
     lastY: 0,
     collided: false,

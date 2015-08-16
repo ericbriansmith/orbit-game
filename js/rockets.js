@@ -42,7 +42,7 @@ function setupInput() {
         gameState.timeScale /= 2;
       }
     } else if (event.keyCode == 46) {
-      if (gameState.timeScale < 20) {
+      if (gameState.timeScale < 10000) {
         gameState.timeScale *= 2;
       }
     } else if (event.keyCode == 122) {
@@ -119,7 +119,7 @@ function drawState() {
     scale = 1;
   }
   if (gameState.zoomMode == 2) {
-    scale = 0.00001;
+    scale = 0.000001;
   }
   drawRocket(scale);
   drawBodies(scale);
@@ -134,15 +134,16 @@ function drawStatus() {
   ctx.font = "15px Arial";
   ctx.fillText("Fuel: " + Math.round(gameState.rocket.fuel * 100) / 100, textX, index);
   index += lineJump;
-  var velocity = gameState.rocket.velocity.total;
+  var velocity = gameState.rocket.relativeVelocityNearest.total;
+  var nearestBodyName = gameState.rocket.nearestBody.name;
   if (gameState.rocket.collided) {
     velocity = 0
   }
-  ctx.fillText("Velocity: " + metersOrKm(velocity, "/s"), textX, index);
+  ctx.fillText("Velocity (" + nearestBodyName + "): " + metersOrKm(velocity, "/s"), textX, index);
   index += lineJump;
   ctx.fillText("Speed to hold orbit: " + metersOrKm(speedToKeepOrbit, "/s"), textX, index);
   index += lineJump;
-  ctx.fillText("Altitude: " + gameState.rocket.nearestBody.name + " " + metersOrKm(gameState.rocket.nearestBody.rocketDistanceResult.distance, ""), textX, index);
+  ctx.fillText("Altitude (" + nearestBodyName + "): " + metersOrKm(gameState.rocket.nearestBody.rocketDistanceResult.distance, ""), textX, index);
   index += lineJump;
   ctx.fillText("Time stretch: " + gameState.timeScale, textX, index);
 }
@@ -167,7 +168,7 @@ function drawRocket(scale) {
   ctx.lineTo(0, -20 * scale);
   ctx.rotate(-1 * gameState.rocket.dir);
   ctx.moveTo(0, 0);
-  ctx.lineTo(rocket.velocity.x, rocket.velocity.y);
+  ctx.lineTo(rocket.relativeVelocityNearest.x, rocket.relativeVelocityNearest.y);
   if (rocket.crashed) {
     ctx.fill();
   } else {
