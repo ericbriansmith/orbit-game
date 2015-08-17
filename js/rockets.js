@@ -53,33 +53,45 @@ function setupInput() {
       }
     } else if (event.keyCode == 97) {
       gameState.zoomMode = 2;
+    } else if (event.keyCode == 116) { //t
+      showTrajectory();
     }
   });
+}
+
+var showingTrajectory = false;
+function showTrajectory() {
+  showingTrajectory = true;
+
 }
 
 function update() {
   resetTransform();
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  var now = new Date().getTime();
-  var timeDiff = now - lastTime;
-  lastTime = now;
-  if (timeDiff > 500) {
-    //happens when losing focus for a while. probably should implement a real pause feature
-    timeDiff = 0;
+  if (!showingTrajectory) {
+    var now = new Date().getTime();
+    var timeDiff = now - lastTime;
+    lastTime = now;
+    if (timeDiff > 500) {
+      //happens when losing focus for a while. probably should implement a real pause feature
+      timeDiff = 0;
+    }
+    var tick = gameState.timeScale * timeDiff/1000;
+    moveThings(gameState, tick);
   }
-  var tick = gameState.timeScale * timeDiff/1000;
-  gameState.rocket.move(tick);
+  drawState();
+}
+
+function moveThings(movingGameState, tick) {
+  movingGameState.rocket.move(tick);
   if (updateCount == 0) {
     updatePeriodicCalculations();
   }
-
-  drawState();
   var i;
-  for (i = 0; i < gameState.moons.length; i++) {
-    gameState.moons[i].move(tick);
+  for (i = 0; i < movingGameState.moons.length; i++) {
+    movingGameState.moons[i].move(tick);
   }
   updateCount = (updateCount + 1) % 30;
-  // setTimeout(update, 10);
 }
 
 var speedToKeepOrbit = 0;
