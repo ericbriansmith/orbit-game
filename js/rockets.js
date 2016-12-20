@@ -54,15 +54,15 @@ function setupInput() {
     } else if (event.keyCode == 97) {
       gameState.zoomMode = 2;
     } else if (event.keyCode == 116) { //t
-      showTrajectory();
+      startTrajectory();
     }
   });
 }
 
 var showingTrajectory = false;
-function showTrajectory() {
+function startTrajectory() {
   showingTrajectory = true;
-
+  drawTrajectory(clone(gameState));
 }
 
 function update() {
@@ -125,7 +125,7 @@ function resetTransform() {
   ctx.setTransform(1, 0, 0, 1, 0, 0);
 }
 
-function drawState() {
+function calcScale() {
   var scale = (gameHeight / 2 - planetPeek) / gameState.rocket.nearestBody.rocketDistanceResult.distance;
   if (scale > 1 || gameState.zoomMode == 1) {
     scale = 1;
@@ -133,7 +133,23 @@ function drawState() {
   if (gameState.zoomMode == 2) {
     scale = 0.000001;
   }
-  drawRocket(scale);
+  return scale;
+}
+
+function drawTrajectory(gameStateToDraw) {
+  resetTransform();
+  var tick = 100;
+  var i=0;
+  while (i < 10) {
+    moveThings(gameStateToDraw, tick);
+    drawRocket(gameStateToDraw.rocket);
+    i++;
+  }
+}
+
+function drawState() {
+  var scale = calcScale();
+  drawRocket(gameState.rocket, scale);
   drawBodies(scale);
   resetTransform();
   drawStatus();
@@ -168,9 +184,7 @@ function metersOrKm(value,tag) {
   }
 }
 
-function drawRocket(scale) {
-  var rocket = gameState.rocket;
-
+function drawRocket(rocket, scale) {
   ctx.translate(gameWidth / 2, gameHeight / 2);
   ctx.rotate(gameState.rocket.dir);
   ctx.beginPath();
