@@ -1,14 +1,14 @@
 
 var gameState;
-var g = 6.67 * (Math.pow(10, -11))
+var g = 6.67 * (Math.pow(10, -11)) //gravity
 
 
 function newGame() {
   gameState = {
     planets: [
       new Planet("Earth", 0, 6371390 * 4, 6371390, 5.97 * Math.pow(10, 24)),
-      new Planet("Mercury", 0, -6371390 * 4, 2439770, 3.285 * Math.pow(10, 23)),
-      new Planet("small", 0, 0, 1000, 1 * Math.pow(10, 17))
+      // new Planet("Mercury", 0, -6371390 * 4, 2439770, 3.285 * Math.pow(10, 23)),
+      // new Planet("small", 0, 0, 1000, 1 * Math.pow(10, 17))
     ],
     bodies: [], //all moons and planets
     moons: [],

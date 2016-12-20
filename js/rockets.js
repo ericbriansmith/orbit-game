@@ -3,7 +3,7 @@ var canvas;
 var gameWidth = 800;
 var gameHeight = 700;
 var lastTime;
-var planetPeek = 100;
+var planetPeek = 100; //the minimum distance we want the nearest body to overlap the screen.
 
 var updateCount = 0;
 
@@ -38,20 +38,20 @@ function setupInput() {
   document.addEventListener("keypress", function(event) {
     //var x = event.which || event.keyCode; for firefox support
     if (event.keyCode == 44) {
-      if (gameState.timeScale >= 2) {
+      if (gameState.timeScale >= 2) { //,
         gameState.timeScale /= 2;
       }
-    } else if (event.keyCode == 46) {
+    } else if (event.keyCode == 46) { //.
       if (gameState.timeScale < 10000) {
         gameState.timeScale *= 2;
       }
-    } else if (event.keyCode == 122) {
+    } else if (event.keyCode == 122) { //z
       if (gameState.zoomMode == 0) {
         gameState.zoomMode = 1;
       } else {
         gameState.zoomMode = 0;
       }
-    } else if (event.keyCode == 97) {
+    } else if (event.keyCode == 97) { //a
       gameState.zoomMode = 2;
     } else if (event.keyCode == 116) { //t
       startTrajectory();
@@ -61,6 +61,7 @@ function setupInput() {
 
 var showingTrajectory = false;
 function startTrajectory() {
+  //not finished
   showingTrajectory = true;
   drawTrajectory(clone(gameState));
 }
@@ -126,6 +127,7 @@ function resetTransform() {
 }
 
 function calcScale() {
+  //find scale so that we can see the ship and the nearest body.
   var scale = (gameHeight / 2 - planetPeek) / gameState.rocket.nearestBody.rocketDistanceResult.distance;
   if (scale > 1 || gameState.zoomMode == 1) {
     scale = 1;
