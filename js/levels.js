@@ -18,7 +18,7 @@ var Level = function() {
   this.planets = [];
   this.bodies = []; //all moons and planets
   this.moons = [];
-  this.rocket = Rocket(6371390 + 160000, 0);
+  this.rocket = Rocket(0, 0);
   this.input = {spacebar: false, left: false, right: false};
   this.inputMuted = false;
   this.timeScale = 1;
@@ -55,8 +55,10 @@ IntroLevel.prototype.goalComplete = function() {
 var LowEarthOrbitLevel = function() {
   Level.call(this);
   var earth = new Planet("Earth", 0, 0, 6371390, 5.97 * Math.pow(10, 24));
-  this.setupPlanetsMoons([earth], [new Moon("Moon", 385000000, 1737100, 7.3477 * Math.pow(10, 22), earth)]);
+  this.rocket.x = 6371390 + 160000;
+  this.rocket.y = 0;
   this.rocket.velocity.y = 7808;
+  this.setupPlanetsMoons([earth], [new Moon("Moon", 385000000, 1737100, 7.3477 * Math.pow(10, 22), earth)]);
 };
 
 LowEarthOrbitLevel.prototype = Object.create(Level.prototype);
