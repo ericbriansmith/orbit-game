@@ -14,6 +14,7 @@ function start() {
   lastTime = new Date().getTime();
   ctx = canvas.getContext("2d");
   setInterval(update, 1000/60);
+  message("Welcome to orbit game");
 }
 
 function setupInput() {
@@ -37,26 +38,32 @@ function setupInput() {
   });
   document.addEventListener("keypress", function(event) {
     //var x = event.which || event.keyCode; for firefox support
-    if (event.keyCode == 44) {
-      if (gameState.timeScale >= 2) { //,
-        gameState.timeScale /= 2;
+    if (!gameState.inputMuted) {
+      if (event.keyCode == 44) {
+        if (gameState.timeScale >= 2) { //,
+          gameState.timeScale /= 2;
+        }
+      } else if (event.keyCode == 46) { //.
+        if (gameState.timeScale < 10000) {
+          gameState.timeScale *= 2;
+        }
+      } else if (event.keyCode == 122) { //z
+        if (gameState.zoomMode == 0) {
+          setZoom(1);
+        } else {
+          setZoom(0);
+        }
+      } else if (event.keyCode == 97) { //a
+        setZoom(2);
+      } else if (event.keyCode == 116) { //t
+        startTrajectory();
       }
-    } else if (event.keyCode == 46) { //.
-      if (gameState.timeScale < 10000) {
-        gameState.timeScale *= 2;
-      }
-    } else if (event.keyCode == 122) { //z
-      if (gameState.zoomMode == 0) {
-        gameState.zoomMode = 1;
-      } else {
-        gameState.zoomMode = 0;
-      }
-    } else if (event.keyCode == 97) { //a
-      gameState.zoomMode = 2;
-    } else if (event.keyCode == 116) { //t
-      startTrajectory();
     }
   });
+}
+
+function setZoom(newZoomMode) {
+  gameState.zoomMode = newZoomMode;
 }
 
 var showingTrajectory = false;

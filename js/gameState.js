@@ -6,19 +6,17 @@ var g = 6.67 * (Math.pow(10, -11)) //gravity
 function newGame() {
   gameState = {
     planets: [
-      new Planet("Earth", 0, 6371390 * 4, 6371390, 5.97 * Math.pow(10, 24)),
-      // new Planet("Mercury", 0, -6371390 * 4, 2439770, 3.285 * Math.pow(10, 23)),
-      // new Planet("small", 0, 0, 1000, 1 * Math.pow(10, 17))
+      new Planet("Earth", 0, 0, 6371390, 5.97 * Math.pow(10, 24))
     ],
     bodies: [], //all moons and planets
     moons: [],
     rocket: Rocket(),
     input: {spacebar: false, left: false, right: false},
+    inputMuted: false,
     timeScale: 1,
     zoomMode: 0 //0 for normal, 1 on ship
   };
-  // gameState.moons[0] = new Moon("moon", 500, 100, 1 * Math.pow(10, 15), gameState.planets[2]);
-  gameState.moons[0] = new Moon("Moon", 385000000 - 6371390, 1737100, 7.3477 * Math.pow(10, 22), gameState.planets[0]);
+  gameState.moons[0] = new Moon("Moon", 385000000, 1737100, 7.3477 * Math.pow(10, 22), gameState.planets[0]);
 
   gameState.bodies = gameState.planets.concat(gameState.moons);
   addLaunchpad(gameState.planets[0], 0);
@@ -65,8 +63,8 @@ function gravityAcceleration(bodyMass, distance) {
 
 function Rocket() {
   var rocket = {
-    x: 6371390 + 20,
-    y: 6371390 * 4,
+    x: 6371390 + 160000,
+    y: 0,
     lastX: 0,
     lastY: 0,
     collided: false,
@@ -74,7 +72,7 @@ function Rocket() {
     dirChangeAmount: 1,
     nearestBody: null,
     fuel: 1000, //seconds of fuel
-    velocity: { x: 0, y:0, total: 0 },
+    velocity: { x: 0, y:7808, total: 0 },
     relativeVelocityNearest: { x: 0, y:0, total: 0 },
     maxThrust: 20,
     maxImpactVelocity: 10,
