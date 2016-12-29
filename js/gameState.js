@@ -1,47 +1,14 @@
 
-var gameState;
 var g = 6.67 * (Math.pow(10, -11)) //gravity
 
-
 function newGame() {
-  gameState = {
-    planets: [
-      new Planet("Earth", 0, 0, 6371390, 5.97 * Math.pow(10, 24))
-    ],
-    bodies: [], //all moons and planets
-    moons: [],
-    rocket: Rocket(),
-    input: {spacebar: false, left: false, right: false},
-    inputMuted: false,
-    timeScale: 1,
-    zoomMode: 0 //0 for normal, 1 on ship
-  };
-  gameState.moons[0] = new Moon("Moon", 385000000, 1737100, 7.3477 * Math.pow(10, 22), gameState.planets[0]);
-
-  gameState.bodies = gameState.planets.concat(gameState.moons);
-  addLaunchpad(gameState.planets[0], 0);
+  gameState = new IntroLevel();
 }
 
 function addLaunchpad(body, direction) {
   var x = body.radius * Math.cos(direction);
   var y = body.radius * Math.sin(direction);
   body.launchpads[body.launchpads.length] = { x: x, y: y, direction: direction };
-}
-
-function getNearestBodyAndCalculateDistances() {
-  var idx;
-  var min = -1;
-  var body;
-  var minDistanceResult;
-  for (idx=0; idx < gameState.bodies.length; idx ++) {
-    var distanceResult = getDistanceToBodySurfaceForRocket(gameState.bodies[idx]);
-    gameState.bodies[idx].rocketDistanceResult = distanceResult;
-    if (min == -1 || distanceResult.distance < min) {
-      body = gameState.bodies[idx];
-      min = distanceResult.distance;
-    }
-  }
-  return body;
 }
 
 function getDistanceToBodySurfaceForRocket(body) {
@@ -61,27 +28,28 @@ function gravityAcceleration(bodyMass, distance) {
   return (g * bodyMass) / Math.pow(distance, 2)
 }
 
-function Rocket() {
+function Rocket(startX, startY) {
   var rocket = {
-    x: 6371390 + 160000,
-    y: 0,
+    x: startX,
+    y: startY,
     lastX: 0,
     lastY: 0,
     collided: false,
     dir: Math.PI / 2,
     dirChangeAmount: 1,
     nearestBody: null,
+    farthestBody: null,
     fuel: 1000, //seconds of fuel
-    velocity: { x: 0, y:7808, total: 0 },
+    velocity: { x: 0, y:0, total: 0 },
     relativeVelocityNearest: { x: 0, y:0, total: 0 },
     maxThrust: 20,
     maxImpactVelocity: 10,
     crashed: false,
     // throttle: 0, //0 to 100
     move: function(time) {
-      var nearestBody = getNearestBodyAndCalculateDistances();
-      this.nearestBody = nearestBody;
-      var nearestBodyDistanceResult = nearestBody.rocketDistanceResult;
+      this.getNearestBodyAndCalculateDistances();
+      var nearestBody = this.nearestBody;
+      var nearestBodyDistanceResult = this.nearestBody.rocketDistanceResult;
       this.calculateRelativeVelocityNearest();
       this.detectCollision();
       var i;
@@ -121,6 +89,26 @@ function Rocket() {
       } else if (gameState.input.right) {
         this.dir += this.dirChangeAmount * time;
       }
+    },
+    getNearestBodyAndCalculateDistances: function() {
+      var min = -1;
+      var max = -1;
+      var nearestBody;
+      var farthestBody;
+      for (idx=0; idx < gameState.bodies.length; idx ++) {
+        var distanceResult = getDistanceToBodySurfaceForRocket(gameState.bodies[idx]);
+        gameState.bodies[idx].rocketDistanceResult = distanceResult;
+        if (min == -1 || distanceResult.distance < min) {
+          nearestBody = gameState.bodies[idx];
+          min = distanceResult.distance;
+        }
+        if (max == -1 || distanceResult.distance > max) {
+          farthestBody = gameState.bodies[idx];
+          max = distanceResult.distance;
+        }
+      }
+      this.nearestBody = nearestBody;
+      this.farthestBody = farthestBody;
     },
     calculateRelativeVelocityNearest: function() {
       var relativeVelocity = {x: this.velocity.x - this.nearestBody.velocity.x,

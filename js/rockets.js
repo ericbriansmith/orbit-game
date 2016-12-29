@@ -14,7 +14,6 @@ function start() {
   lastTime = new Date().getTime();
   ctx = canvas.getContext("2d");
   setInterval(update, 1000/60);
-  message("Welcome to orbit game");
 }
 
 function setupInput() {
@@ -140,7 +139,9 @@ function calcScale() {
     scale = 1;
   }
   if (gameState.zoomMode == 2) {
-    scale = 0.000001;
+    //find scale to see all bodies
+    var farthestBody = gameState.rocket.farthestBody;
+    var scale = (gameHeight / 2) / (farthestBody.rocketDistanceResult.distance + farthestBody.radius * 2);
   }
   return scale;
 }
