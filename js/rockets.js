@@ -169,6 +169,9 @@ function drawState() {
 }
 
 function drawStatus() {
+  ctx.strokeStyle = colors.text;
+  ctx.lineWidth = 2;
+  ctx.fillStyle = colors.text;
   var lineJump = 20;
   var textX = 2;
   var index = lineJump;
@@ -198,6 +201,8 @@ function metersOrKm(value,tag) {
 }
 
 function drawRocket(rocket, scale) {
+  ctx.strokeStyle = colors.rocket;
+  ctx.lineWidth = 2;
   ctx.translate(gameWidth / 2, gameHeight / 2);
   ctx.rotate(gameState.rocket.dir);
   ctx.beginPath();
@@ -230,12 +235,12 @@ function drawCircle(x, y, radius, scale) {
   var i;
   var seg = 2 * Math.PI / 100;
   ctx.lineWidth = lineWidth;
-  ctx.strokeStyle="#00804c";
+  ctx.strokeStyle=colors.outline1;
   for (i=0; i < 2*Math.PI; i+=seg) {
-    if (ctx.strokeStyle == "#00804c") {
-      ctx.strokeStyle="#996633";
+    if (ctx.strokeStyle == colors.outline1) {
+      ctx.strokeStyle=colors.outline2;
     } else {
-      ctx.strokeStyle="#00804c";
+      ctx.strokeStyle=colors.outline1;
     }
 
     ctx.beginPath();
@@ -244,8 +249,10 @@ function drawCircle(x, y, radius, scale) {
     ctx.arc(0, 0,  circleRad, i, i + seg);
     ctx.stroke();
   }
-  ctx.strokeStyle="#000000";
-  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.arc(0, 0,  circleRad, 0, 2 * Math.PI);
+  ctx.fillStyle = colors.planetFill;
+  ctx.fill();
 }
 
 function fixSize() {
