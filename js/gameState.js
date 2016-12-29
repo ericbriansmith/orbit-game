@@ -1,10 +1,6 @@
 
 var g = 6.67 * (Math.pow(10, -11)) //gravity
 
-function newGame() {
-  gameState = new IntroLevel();
-}
-
 function addLaunchpad(body, direction) {
   var x = body.radius * Math.cos(direction);
   var y = body.radius * Math.sin(direction);

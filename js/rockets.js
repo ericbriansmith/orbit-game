@@ -85,6 +85,9 @@ function update() {
     }
     var tick = gameState.timeScale * timeDiff/1000;
     moveThings(gameState, tick);
+    if (gameState.goalComplete()) {
+      nextLevel();
+    }
   }
   drawState();
 }
