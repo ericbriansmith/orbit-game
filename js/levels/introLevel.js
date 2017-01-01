@@ -1,9 +1,11 @@
 var IntroLevel = function() {
   Level.call(this);
   var planetRadius = 1000;
-  this.setupPlanetsMoons([new Planet("Minimus", 0, 0, planetRadius, 1.5 * Math.pow(10, 17))], []);
-  this.rocket.x = planetRadius + rocketHeight / 2;
+  var minimus = new Planet("Minimus", 0, 0, planetRadius, 1.5 * Math.pow(10, 17));
+  this.setupPlanetsMoons([minimus], []);
+  this.rocket.x = planetRadius + rocketHeight / 2 + 20;
   this.rocket.y = 0;
+  this.rocket.velocity.y = 0;
   this.rocket.fuel = 9;
   this.quartersCompleted = 0; //user needs to complete 4 quarters
   this.travelingClockwise = false;

@@ -33,6 +33,9 @@ Level.prototype.setupPlanetsMoons = function(planets, moons) {
   this.planets = planets;
   this.moons = moons;
   this.bodies = this.planets.concat(this.moons);
+  for (var i=0; i < this.planets.length; i++) {
+    this.planets[i].calculateSurfaceVelocity();
+  }
   // addLaunchpad(this.planets[0], 0);
 }
 

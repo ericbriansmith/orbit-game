@@ -136,6 +136,7 @@ function Moon (name,altitude,radius,mass,planet) {
   };
   this.launchpads = [];
   this.planet = planet;
+  this.direction = 0;
   var xVel = 0;
   var yVel = Math.sqrt(g * planet.mass / this.x);
   this.velocity =  { x: xVel, y: yVel };
@@ -159,9 +160,18 @@ function Planet (name,x,y,radius,mass) {
     distance: 0
   };
   this.velocity = {x: 0, y: 0};
+  this.direction = 0; //planet rotates counterclockwise
+  this.angularVelocity = 0; // in radians per second
+  this.surfaceVelocity = 0;
   this.launchpads = [];
   this.radius=radius;
   this.mass=mass;
+  this.move = function(time) {
+    this.direction += this.angularVelocity * time;
+  };
+  this.calculateSurfaceVelocity = function() {
+    this.surfaceVelocity = this.angularVelocity * this.radius;
+  };
 }
 
 function clone(obj) {

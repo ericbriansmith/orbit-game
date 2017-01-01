@@ -95,6 +95,9 @@ function update() {
 
 function moveThings(movingGameState, tick) {
   movingGameState.rocket.move(tick);
+  for (i = 0; i < movingGameState.planets.length; i++) {
+    movingGameState.planets[i].move(tick);
+  }
   if (updateCount == 0) {
     updatePeriodicCalculations();
   }
@@ -115,7 +118,7 @@ function drawBodies(scale) {
   var i;
   for (i = 0; i < gameState.bodies.length; i++) {
     var body = gameState.bodies[i];
-    drawCircle(body.x, body.y, body.radius, scale);
+    drawCircle(body.x, body.y, body.radius, scale, body.direction);
     drawLaunchpads(body, scale);
   }
 }
@@ -226,7 +229,7 @@ function drawRocket(rocket, scale) {
 //   ctx.strokeRect(x,y, 20, 20);
 // }
 
-function drawCircle(x, y, radius, scale) {
+function drawCircle(x, y, radius, scale, startDir) {
   var lineWidth = 10 * scale;
   if (lineWidth < 1) {
     lineWidth = 1;
@@ -238,7 +241,7 @@ function drawCircle(x, y, radius, scale) {
   var seg = 2 * Math.PI / 100;
   ctx.lineWidth = lineWidth;
   ctx.strokeStyle=colors.outline1;
-  for (i=0; i < 2*Math.PI; i+=seg) {
+  for (i=startDir; i < startDir + 2 * Math.PI; i+=seg) {
     if (ctx.strokeStyle == colors.outline1) {
       ctx.strokeStyle=colors.outline2;
     } else {
