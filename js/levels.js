@@ -43,13 +43,29 @@ var IntroLevel = function() {
   this.setupPlanetsMoons([new Planet("Minimus", 0, 0, 1000, 1 * Math.pow(10, 17))], []);
   this.rocket.x = 1010;
   this.rocket.y = 0;
+  this.arrivedToLeftHemi = false;
+  this.travelingClockwise = false;
 };
 IntroLevel.prototype = Object.create(Level.prototype);
 IntroLevel.prototype.start = function() {
-  message("Small planet");
+  message("Small planet. Complete an orbit.");
 }
 IntroLevel.prototype.goalComplete = function() {
-  return this.rocket.velocity.total > 100;
+  //planet center is 0,0
+  if (gameState.rocket.x < 0 && !this.arrivedToLeftHemi) {
+    this.arrivedToLeftHemi = true;
+    this.travelingClockwise = gameState.rocket.y < 0;
+  }
+  if (this.arrivedToLeftHemi) {
+    if (gameState.rocket.x > 0) {
+      if (this.travelingClockwise) {
+        return gameState.rocket.y > 0;
+      } else {
+        return gameState.rocket.y < 0;
+      }
+    }
+  }
+  return false;
 }
 
 var LowEarthOrbitLevel = function() {
