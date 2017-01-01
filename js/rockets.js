@@ -10,6 +10,7 @@ var updateCount = 0;
 function start() {
   canvas = $("#main")[0];
   setupInput();
+  setupDevInput();
   newGame();
   lastTime = new Date().getTime();
   ctx = canvas.getContext("2d");
@@ -201,15 +202,16 @@ function metersOrKm(value,tag) {
 }
 
 function drawRocket(rocket, scale) {
+  var rocketHalfHeight = rocketHeight / 2;
   ctx.strokeStyle = colors.rocket;
   ctx.lineWidth = 2;
   ctx.translate(gameWidth / 2, gameHeight / 2);
   ctx.rotate(gameState.rocket.dir);
   ctx.beginPath();
-  ctx.moveTo(0, -20 * scale);
-  ctx.lineTo(10 * scale, 10 * scale);
-  ctx.lineTo(-10 * scale, 10 * scale);
-  ctx.lineTo(0, -20 * scale);
+  ctx.moveTo(0, -rocketHeight * scale);
+  ctx.lineTo(rocketHalfHeight * scale, rocketHalfHeight * scale);
+  ctx.lineTo(-rocketHalfHeight * scale, rocketHalfHeight * scale);
+  ctx.lineTo(0, -rocketHeight * scale);
   ctx.rotate(-1 * gameState.rocket.dir);
   ctx.moveTo(0, 0);
   ctx.lineTo(rocket.relativeVelocityNearest.x, rocket.relativeVelocityNearest.y);

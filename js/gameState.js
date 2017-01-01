@@ -24,6 +24,7 @@ function gravityAcceleration(bodyMass, distance) {
   return (g * bodyMass) / Math.pow(distance, 2)
 }
 
+var rocketHeight = 20;
 function Rocket(startX, startY) {
   var rocket = {
     x: startX,
@@ -35,7 +36,7 @@ function Rocket(startX, startY) {
     dirChangeAmount: 1,
     nearestBody: null,
     farthestBody: null,
-    fuel: 1000, //seconds of fuel
+    fuel: 0, //seconds of fuel
     velocity: { x: 0, y:0, total: 0 },
     relativeVelocityNearest: { x: 0, y:0, total: 0 },
     maxThrust: 20,
@@ -74,8 +75,8 @@ function Rocket(startX, startY) {
 
       if (this.collided) {
         if (this.relativeVelocityNearest.total > 10) {
-          console.log(this.relativeVelocityNearest.total);
           this.crashed = true;
+          message("You have crashed");
         }
         this.velocity = { x: nearestBody.velocity.x, y: nearestBody.velocity.y, total: 0 };
       }
@@ -113,7 +114,7 @@ function Rocket(startX, startY) {
       this.relativeVelocityNearest = relativeVelocity;
     },
     detectCollision: function() {
-      if (this.nearestBody.rocketDistanceResult.distance < 10) {
+      if (this.nearestBody.rocketDistanceResult.distance < rocketHeight / 2) {
         this.collided = true;
       } else {
         this.collided = false;
