@@ -108,8 +108,11 @@ function Rocket(startX, startY) {
       this.farthestBody = farthestBody;
     },
     calculateRelativeVelocityNearest: function() {
+      var relativePositionVector = {x: this.nearestBody.x - this.x, y: this.nearestBody.y - this.y};
+
       var relativeVelocity = {x: this.velocity.x - this.nearestBody.velocity.x,
                     y: this.velocity.y - this.nearestBody.velocity.y};
+      this.approachPlanetSpeed = projectVector(relativeVelocity, relativePositionVector);
       relativeVelocity.total = Math.sqrt(Math.pow(relativeVelocity.x, 2) + Math.pow(relativeVelocity.y, 2));
       this.relativeVelocityNearest = relativeVelocity;
     },
@@ -122,6 +125,13 @@ function Rocket(startX, startY) {
     }
   };
   return rocket;
+}
+
+//project vector a onto vector b
+function projectVector(a, b) {
+  var bMag = Math.sqrt(Math.pow(b.x, 2) + Math.pow(b.y, 2));
+  var unitB = {x: b.x / bMag, y: b.y / bMag};
+  return a.x * unitB.x + a.y * unitB.y;
 }
 
 function Moon (name,altitude,radius,mass,planet) {

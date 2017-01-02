@@ -173,6 +173,7 @@ function drawState() {
 }
 
 function drawStatus() {
+  var nearestBody = gameState.rocket.nearestBody;
   ctx.strokeStyle = colors.text;
   ctx.lineWidth = 2;
   ctx.fillStyle = colors.text;
@@ -185,7 +186,7 @@ function drawStatus() {
   var velocity = gameState.rocket.relativeVelocityNearest.total;
   var nearestBodyName = gameState.rocket.nearestBody.name;
   if (gameState.rocket.collided) {
-    velocity = 0
+    velocity = 0;
   }
   ctx.fillText("Velocity (" + nearestBodyName + "): " + metersOrKm(velocity, "/s"), textX, index);
   index += lineJump;
@@ -194,6 +195,8 @@ function drawStatus() {
   ctx.fillText("Altitude (" + nearestBodyName + "): " + metersOrKm(gameState.rocket.nearestBody.rocketDistanceResult.distance, ""), textX, index);
   index += lineJump;
   ctx.fillText("Time stretch: " + gameState.timeScale, textX, index);
+  index += lineJump;
+  ctx.fillText("Approach Speed: " + metersOrKm(gameState.rocket.approachPlanetSpeed, "/s"), textX, index);
 }
 
 function metersOrKm(value,tag) {
