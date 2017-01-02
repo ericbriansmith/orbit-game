@@ -197,6 +197,8 @@ function drawStatus() {
   ctx.fillText("Time stretch: " + gameState.timeScale, textX, index);
   index += lineJump;
   ctx.fillText("Approach Speed: " + metersOrKm(gameState.rocket.approachPlanetSpeed, "/s"), textX, index);
+  index += lineJump;
+  ctx.fillText("Tangent Speed: " + metersOrKm(gameState.rocket.planetTangentSpeed, "/s"), textX, index);
 }
 
 function metersOrKm(value,tag) {

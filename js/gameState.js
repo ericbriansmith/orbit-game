@@ -17,7 +17,9 @@ function getDistanceToBodySurface(x,y,body) {
   var distToCenter = Math.sqrt(Math.pow(xDiff, 2) + Math.pow(yDiff, 2));
   var distance = distToCenter - body.radius;
 
-  return { distToCenter: distToCenter, distance: distance, x: xDiff / distToCenter, y: yDiff / distToCenter };
+  return { distToCenter: distToCenter, distance: distance,
+    xUnit: xDiff / distToCenter, yUnit: yDiff / distToCenter,
+    xToCenter: xDiff, yToCenter: yDiff };
 }
 
 function gravityAcceleration(bodyMass, distance) {
@@ -52,13 +54,17 @@ function Rocket(startX, startY) {
       var i;
       var accelX=0, accelY=0, accel;
       if (this.collided) {
-        //make sure it is at the surface?
+        var correctionRatio = (nearestBody.radius + rocketHeight / 2)  / nearestBodyDistanceResult.distToCenter
+        this.x = nearestBody.x + nearestBodyDistanceResult.xToCenter * correctionRatio;
+        this.y = nearestBody.y + nearestBodyDistanceResult.yToCenter * correctionRatio;
+        this.velocity.x = nearestBody.velocity.x;
+        this.velocity.y = nearestBody.velocity.y;
       } else {
         //calculate gravity
         for (i=0; i < gameState.bodies.length; i++) {
           accel = gravityAcceleration(gameState.bodies[i].mass, gameState.bodies[i].rocketDistanceResult.distToCenter);
-          accelX += gameState.bodies[i].rocketDistanceResult.x * accel * time;
-          accelY += gameState.bodies[i].rocketDistanceResult.y * accel * time;
+          accelX += gameState.bodies[i].rocketDistanceResult.xUnit * accel * time;
+          accelY += gameState.bodies[i].rocketDistanceResult.yUnit * accel * time;
         }
       }
 
@@ -73,7 +79,7 @@ function Rocket(startX, startY) {
       this.x += this.velocity.x * time;
       this.y += this.velocity.y * time;
 
-      if (this.collided) {
+      if (this.collided && 1==2) {//TODO: crashing
         if (this.relativeVelocityNearest.total > 10) {
           this.crashed = true;
           message("You have crashed");
@@ -113,6 +119,7 @@ function Rocket(startX, startY) {
       var relativeVelocity = {x: this.velocity.x - this.nearestBody.velocity.x,
                     y: this.velocity.y - this.nearestBody.velocity.y};
       this.approachPlanetSpeed = projectVector(relativeVelocity, relativePositionVector);
+      this.planetTangentSpeed = projectVector(relativeVelocity, rotate90CounterClockwise(relativePositionVector));
       relativeVelocity.total = Math.sqrt(Math.pow(relativeVelocity.x, 2) + Math.pow(relativeVelocity.y, 2));
       this.relativeVelocityNearest = relativeVelocity;
     },
@@ -134,6 +141,10 @@ function projectVector(a, b) {
   return a.x * unitB.x + a.y * unitB.y;
 }
 
+function rotate90CounterClockwise(vector) {
+  return {x: -vector.y, y: vector.x};
+}
+
 function Moon (name,altitude,radius,mass,planet) {
   this.name = name;
   this.x = planet.radius + altitude;
@@ -142,7 +153,9 @@ function Moon (name,altitude,radius,mass,planet) {
   this.mass = mass;
   this.rocketDistanceResult = {
     distToCenter: 0,
-    distance: 0
+    distance: 0,
+    xToCenter: 0,
+    yToCenter: 0
   };
   this.launchpads = [];
   this.planet = planet;
@@ -156,8 +169,8 @@ function Moon (name,altitude,radius,mass,planet) {
     var distanceResult = getDistanceToBodySurface(this.x, this.y, this.planet);
 
     var accel = gravityAcceleration(this.planet.mass, distanceResult.distToCenter);
-    this.velocity.x -= distanceResult.x * accel * time;
-    this.velocity.y -= distanceResult.y * accel * time;
+    this.velocity.x -= distanceResult.xUnit * accel * time;
+    this.velocity.y -= distanceResult.yUnit * accel * time;
   };
 }
 
@@ -174,8 +187,8 @@ function Planet (name,x,y,radius,mass) {
   this.angularVelocity = 0; // in radians per second
   this.surfaceVelocity = 0;
   this.launchpads = [];
-  this.radius=radius;
-  this.mass=mass;
+  this.radius = radius;
+  this.mass = mass;
   this.move = function(time) {
     this.direction += this.angularVelocity * time;
   };
