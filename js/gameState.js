@@ -179,7 +179,7 @@ function Moon (name,altitude,radius,mass,planet) {
   this.angularVelocity = 0; // in radians per second
   this.surfaceVelocity = 0;
   var xVel = 0;
-  var yVel = Math.sqrt(g * planet.mass / this.x);
+  var yVel = -Math.sqrt(g * planet.mass / this.x);
   this.velocity =  { x: xVel, y: yVel };
   this.move = function(time) {
     this.x += this.velocity.x * time;

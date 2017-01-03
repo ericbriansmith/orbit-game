@@ -5,10 +5,10 @@ var MinimusMoon = function() {
   minimus.angularVelocity = -Math.PI * 2 / 120;
   var moon = new Moon("Moon", 10000, 100, 1 * Math.pow(10, 15), minimus);
   this.setupPlanetsMoons([minimus], [moon]);
-  this.rocket.x = planetRadius + rocketHeight / 2 + 20;
+  this.rocket.x = planetRadius + rocketHeight / 2;
   this.rocket.y = 0;
   this.rocket.velocity.y = 0;
-  this.rocket.fuel = 14;
+  this.rocket.fuel = 9;
   this.travelingClockwise = false;
 };
 MinimusMoon.prototype = Object.create(Level.prototype);
