@@ -59,6 +59,9 @@ function Rocket(startX, startY) {
         this.y = nearestBody.y + nearestBodyDistanceResult.yToCenter * correctionRatio;
         this.velocity.x = nearestBody.velocity.x;
         this.velocity.y = nearestBody.velocity.y;
+        var tangentToBodyUnit = rotate90CounterClockwise({x: nearestBodyDistanceResult.xUnit, y: nearestBodyDistanceResult.yUnit});
+        var tangentVelocity = vectorMult(tangentToBodyUnit, nearestBody.surfaceVelocity);
+        this.velocity = vectorAdd(this.velocity, tangentVelocity);
       } else {
         //calculate gravity
         for (i=0; i < gameState.bodies.length; i++) {
@@ -134,11 +137,24 @@ function Rocket(startX, startY) {
   return rocket;
 }
 
+function vectorAdd(a, b) {
+  return {x: a.x + b.x, y: a.y + b.y};
+}
+
+function vectorMult(v, s) {
+  return {x: v.x * s, y: v.y * s};
+}
+
 //project vector a onto vector b
 function projectVector(a, b) {
   var bMag = Math.sqrt(Math.pow(b.x, 2) + Math.pow(b.y, 2));
   var unitB = {x: b.x / bMag, y: b.y / bMag};
   return a.x * unitB.x + a.y * unitB.y;
+}
+
+function unitVector(v) {
+  var mag = Math.sqrt(Math.pow(v.x, 2) + Math.pow(v.y, 2));
+  return {x: v.x / mag, y: v.y / mag};
 }
 
 function rotate90CounterClockwise(vector) {
