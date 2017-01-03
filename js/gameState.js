@@ -175,7 +175,9 @@ function Moon (name,altitude,radius,mass,planet) {
   };
   this.launchpads = [];
   this.planet = planet;
-  this.direction = 0;
+  this.direction = 0; //planet rotates counterclockwise
+  this.angularVelocity = 0; // in radians per second
+  this.surfaceVelocity = 0;
   var xVel = 0;
   var yVel = Math.sqrt(g * planet.mass / this.x);
   this.velocity =  { x: xVel, y: yVel };
