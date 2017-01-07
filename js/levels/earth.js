@@ -2,7 +2,7 @@
 var Earth = function() {
   Level.call(this);
   var earth = new Planet("Earth", 0, 0, 6371390, 5.97 * Math.pow(10, 24));
-  earth.angularVelocity = 7.2921159 * Math.pow(10, -5);
+  earth.angularVelocity = -7.2921159 * Math.pow(10, -5);
   this.rocket.x = 6371390 + rocketHeight / 2;
   this.rocket.y = 0;
   this.rocket.fuel = 1000;
