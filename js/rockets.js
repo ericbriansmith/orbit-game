@@ -76,7 +76,7 @@ function startTrajectory() {
 function update() {
   resetTransform();
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  if (!showingTrajectory) {
+  // if (!showingTrajectory) {
     var now = new Date().getTime();
     var timeDiff = now - lastTime;
     lastTime = now;
@@ -89,8 +89,8 @@ function update() {
     if (gameState.goalComplete()) {
       nextLevel();
     }
-  }
-  drawState();
+  // }
+  drawState(tick);
 }
 
 function moveThings(movingGameState, tick) {
@@ -164,15 +164,15 @@ function drawTrajectory(gameStateToDraw) {
   }
 }
 
-function drawState() {
+function drawState(tick) {
   var scale = calcScale();
   drawRocket(gameState.rocket, scale);
   drawBodies(scale);
   resetTransform();
-  drawStatus();
+  drawStatus(tick);
 }
 
-function drawStatus() {
+function drawStatus(tick) {
   var nearestBody = gameState.rocket.nearestBody;
   ctx.strokeStyle = colors.text;
   ctx.lineWidth = 2;
@@ -201,6 +201,8 @@ function drawStatus() {
   ctx.fillText("Tangent Speed: " + metersOrKm(gameState.rocket.planetTangentSpeed, "/s"), textX, index);
   index += lineJump;
   ctx.fillText("Direction: " + Math.floor(gameState.rocket.nearestBody.rocketDistanceResult.direction * 180 / Math.PI), textX, index);
+  index += lineJump;
+  ctx.fillText("fps: " + Math.floor(1/tick), textX, index);
 }
 
 function metersOrKm(value,tag) {
