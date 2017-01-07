@@ -199,6 +199,8 @@ function drawStatus() {
   ctx.fillText("Approach Speed: " + metersOrKm(gameState.rocket.approachPlanetSpeed, "/s"), textX, index);
   index += lineJump;
   ctx.fillText("Tangent Speed: " + metersOrKm(gameState.rocket.planetTangentSpeed, "/s"), textX, index);
+  index += lineJump;
+  ctx.fillText("Direction: " + Math.floor(gameState.rocket.nearestBody.rocketDistanceResult.direction * 180 / Math.PI), textX, index);
 }
 
 function metersOrKm(value,tag) {
@@ -243,6 +245,15 @@ function drawCircle(x, y, radius, scale, startDir) {
   ctx.translate(gameWidth / 2, gameHeight / 2);
   ctx.translate(scale * (gameState.rocket.x * -1 + x), scale * (gameState.rocket.y * -1 + y));
 
+  var circleRad = radius * scale;
+  ctx.beginPath();
+  ctx.arc(0, 0,  circleRad, 0, 2 * Math.PI);
+  ctx.fillStyle = colors.planetFill;
+  ctx.fill();
+
+  drawLandmarks(x, y, radius, scale, startDir);
+
+
   //
   //Below code for drawing dashed line around planet. Doesn't work well in
   //chrome
@@ -265,11 +276,27 @@ function drawCircle(x, y, radius, scale, startDir) {
   //   ctx.arc(0, 0,  circleRad, i, i + seg);
   //   ctx.stroke();
   // }
-  var circleRad = radius * scale;
-  ctx.beginPath();
-  ctx.arc(0, 0,  circleRad, 0, 2 * Math.PI);
-  ctx.fillStyle = colors.planetFill;
-  ctx.fill();
+
+}
+
+function drawLandmarks(x, y, radius, scale, startDir) {
+  //TODO: below calculations could be cached
+  var circumference = 2 * Math.PI * radius;
+  var distanceBetweenLandmarks = 900;
+  var numLandmarks = Math.floor(circumference / distanceBetweenLandmarks);
+  var i;
+  radius *= scale;
+  var angleBetweenMarks = 2 * Math.PI / numLandmarks;
+  var shipDirection = gameState.rocket.nearestBody.rocketDistanceResult.direction;
+  var start = Math.floor((shipDirection - startDir)/angleBetweenMarks) - 1;
+  for (i = start; i < start + 3; i++) {
+    var angle = startDir + i * angleBetweenMarks;
+    ctx.beginPath();
+    var x = radius * Math.cos(angle);
+    var y = radius * Math.sin(angle);
+    ctx.rect(x, y, 10 * scale, 10 * scale);
+    ctx.stroke();
+  }
 }
 
 function fixSize() {

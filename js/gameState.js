@@ -16,10 +16,21 @@ function getDistanceToBodySurface(x,y,body) {
   var yDiff = y - body.y;
   var distToCenter = Math.sqrt(Math.pow(xDiff, 2) + Math.pow(yDiff, 2));
   var distance = distToCenter - body.radius;
+  var dir = getAngleFromCartesian(xDiff, yDiff);
 
   return { distToCenter: distToCenter, distance: distance,
     xUnit: xDiff / distToCenter, yUnit: yDiff / distToCenter,
-    xToCenter: xDiff, yToCenter: yDiff };
+    xToCenter: xDiff, yToCenter: yDiff, direction: dir };
+}
+
+function getAngleFromCartesian(x, y) {
+  var dir = Math.atan(y / x);
+  if (x < 0) {
+    return dir + Math.PI;
+  } else if (y < 0) {
+    return dir + 2 * Math.PI;
+  }
+  return dir;
 }
 
 function gravityAcceleration(bodyMass, distance) {
