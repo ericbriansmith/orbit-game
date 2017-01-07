@@ -235,30 +235,37 @@ function drawRocket(rocket, scale) {
 // }
 
 function drawCircle(x, y, radius, scale, startDir) {
-  var lineWidth = 10 * scale;
-  if (lineWidth < 1) {
-    lineWidth = 1;
-  }
+  // var lineWidth = 10 * scale;
+  // if (lineWidth < 1) {
+  //   lineWidth = 1;
+  // }
   resetTransform();
   ctx.translate(gameWidth / 2, gameHeight / 2);
   ctx.translate(scale * (gameState.rocket.x * -1 + x), scale * (gameState.rocket.y * -1 + y));
-  var i;
-  var seg = 2 * Math.PI / 100;
-  ctx.lineWidth = lineWidth;
-  ctx.strokeStyle=colors.outline1;
-  for (i=startDir; i < startDir + 2 * Math.PI; i+=seg) {
-    if (ctx.strokeStyle == colors.outline1) {
-      ctx.strokeStyle=colors.outline2;
-    } else {
-      ctx.strokeStyle=colors.outline1;
-    }
 
-    ctx.beginPath();
-    var circleRad = radius * scale - lineWidth/2;
-    if (circleRad < 1) {circleRad = 1;}
-    ctx.arc(0, 0,  circleRad, i, i + seg);
-    ctx.stroke();
-  }
+  //
+  //Below code for drawing dashed line around planet. Doesn't work well in
+  //chrome
+  //
+
+  // var i;
+  // var seg = 2 * Math.PI / 100;
+  // ctx.lineWidth = lineWidth;
+  // ctx.strokeStyle=colors.outline1;
+  // for (i=startDir; i < startDir + 2 * Math.PI; i+=seg) {
+  //   if (ctx.strokeStyle == colors.outline1) {
+  //     ctx.strokeStyle=colors.outline2;
+  //   } else {
+  //     ctx.strokeStyle=colors.outline1;
+  //   }
+  //
+  //   ctx.beginPath();
+  //   var circleRad = radius * scale - lineWidth/2;
+  //   if (circleRad < 1) {circleRad = 1;}
+  //   ctx.arc(0, 0,  circleRad, i, i + seg);
+  //   ctx.stroke();
+  // }
+  var circleRad = radius * scale;
   ctx.beginPath();
   ctx.arc(0, 0,  circleRad, 0, 2 * Math.PI);
   ctx.fillStyle = colors.planetFill;
