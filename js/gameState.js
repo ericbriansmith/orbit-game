@@ -127,7 +127,11 @@ function Rocket(startX, startY) {
       this.relativeVelocityNearest = relativeVelocity;
     },
     detectCollision: function() {
-      if (this.nearestBody.rocketDistanceResult.distance < rocketHeight / 2) {
+      var threshold = 1; //plus one when space is not pressed to avoid flickers
+      if (gameState.input.spacebar) {
+        threshold = 0;
+      }
+      if (this.nearestBody.rocketDistanceResult.distance < rocketHeight / 2 + threshold) {
         this.collided = true;
       } else {
         this.collided = false;

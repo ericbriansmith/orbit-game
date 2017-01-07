@@ -3,7 +3,7 @@ var levels = [];
 var nextLevelIndex;
 
 function newGame() {
-  levels = [new IntroLevel(), new EscapePlanet(), new MinimusMoon(), new LowEarthOrbitLevel()];
+  levels = [new IntroLevel(), new EscapePlanet(), new MinimusMoon(), new LowEarthOrbitLevel(), new Earth()];
   nextLevelIndex = 0;
   nextLevel();
 }
