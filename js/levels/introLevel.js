@@ -1,9 +1,8 @@
 var IntroLevel = function() {
   Level.call(this);
-  var planetRadius = 1000;
-  var minimus = new Planet("Minimus", 0, 0, planetRadius, 1.5 * Math.pow(10, 17));
+  var minimus = new Minimus();
   this.setupPlanetsMoons([minimus], []);
-  this.rocket.x = planetRadius + rocketHeight / 2 + 20;
+  this.rocket.x = minimus.radius + rocketHeight / 2;
   this.rocket.y = 0;
   this.rocket.velocity.y = 0;
   this.rocket.fuel = 9;

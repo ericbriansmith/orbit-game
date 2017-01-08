@@ -176,60 +176,6 @@ function rotate90CounterClockwise(vector) {
   return {x: -vector.y, y: vector.x};
 }
 
-function Moon (name,altitude,radius,mass,planet) {
-  this.name = name;
-  this.x = planet.radius + altitude;
-  this.y = planet.y;
-  this.radius = radius;
-  this.mass = mass;
-  this.rocketDistanceResult = {
-    distToCenter: 0,
-    distance: 0,
-    xToCenter: 0,
-    yToCenter: 0
-  };
-  this.launchpads = [];
-  this.planet = planet;
-  this.direction = 0; //planet rotates counterclockwise
-  this.angularVelocity = 0; // in radians per second
-  this.surfaceVelocity = 0;
-  var xVel = 0;
-  var yVel = -Math.sqrt(g * planet.mass / this.x);
-  this.velocity =  { x: xVel, y: yVel };
-  this.move = function(time) {
-    this.x += this.velocity.x * time;
-    this.y += this.velocity.y * time;
-    var distanceResult = getDistanceToBodySurface(this.x, this.y, this.planet);
-
-    var accel = gravityAcceleration(this.planet.mass, distanceResult.distToCenter);
-    this.velocity.x -= distanceResult.xUnit * accel * time;
-    this.velocity.y -= distanceResult.yUnit * accel * time;
-  };
-}
-
-function Planet (name,x,y,radius,mass) {
-  this.name = name;
-  this.x=x;
-  this.y=y;
-  this.rocketDistanceResult = {
-    distToCenter: 0,
-    distance: 0
-  };
-  this.velocity = {x: 0, y: 0};
-  this.direction = 0; //planet rotates counterclockwise
-  this.angularVelocity = 0; // in radians per second
-  this.surfaceVelocity = 0;
-  this.launchpads = [];
-  this.radius = radius;
-  this.mass = mass;
-  this.move = function(time) {
-    this.direction += this.angularVelocity * time;
-  };
-  this.calculateSurfaceVelocity = function() {
-    this.surfaceVelocity = this.angularVelocity * this.radius;
-  };
-}
-
 function clone(obj) {
     var copy;
 

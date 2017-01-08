@@ -119,7 +119,7 @@ function drawBodies(scale) {
   for (i = 0; i < gameState.bodies.length; i++) {
     var body = gameState.bodies[i];
     drawCircle(body.x, body.y, body.radius, scale, body.direction);
-    drawLaunchpads(body, scale);
+    // drawLaunchpads(body, scale);
   }
 }
 
