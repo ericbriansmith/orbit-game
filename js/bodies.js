@@ -14,25 +14,35 @@ var Body = function(name, radius, mass) {
   };
 }
 
-function Moon (name,altitude,radius,mass,planet) {
+function OritingBody(name,altitude,radius,mass,planet) {
   Body.call(this, name, radius, mass);
+  this.planet = planet;
   this.x = planet.radius + altitude;
   this.y = planet.y;
-  this.planet = planet;
   var xVel = 0;
   var yVel = -Math.sqrt(g * planet.mass / this.x);
   this.velocity =  { x: xVel, y: yVel };
-  this.move = function(time) {
-    this.x += this.velocity.x * time;
-    this.y += this.velocity.y * time;
-    var distanceResult = getDistanceToBodySurface(this.x, this.y, this.planet);
-
-    var accel = gravityAcceleration(this.planet.mass, distanceResult.distToCenter);
-    this.velocity.x -= distanceResult.xUnit * accel * time;
-    this.velocity.y -= distanceResult.yUnit * accel * time;
-  };
 }
-Moon.prototype = Object.create(Body.prototype);
+OritingBody.prototype = Object.create(Body.prototype);
+OritingBody.prototype.move = function(time) {
+  this.x += this.velocity.x * time;
+  this.y += this.velocity.y * time;
+  var distanceResult = getDistanceToBodySurface(this.x, this.y, this.planet);
+
+  var accel = gravityAcceleration(this.planet.mass, distanceResult.distToCenter);
+  this.velocity.x -= distanceResult.xUnit * accel * time;
+  this.velocity.y -= distanceResult.yUnit * accel * time;
+}
+
+function Moon (name,altitude,radius,mass,planet) {
+  OritingBody.call(this, name, altitude, radius, mass, planet);
+}
+Moon.prototype = Object.create(OritingBody.prototype);
+
+function Satellite (name, altitude, planet) {
+  OritingBody.call(this, name, altitude, 0, 0, planet);
+}
+Satellite.prototype = Object.create(OritingBody.prototype);
 
 function Planet (name,radius,mass) {
   Body.call(this, name, radius, mass);
