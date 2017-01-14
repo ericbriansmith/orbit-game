@@ -3,7 +3,7 @@ var MinimusMoon = function() {
   var minimus = new Minimus();
   minimus.initAngularVelocity();
   var moon = new Moon("Moon", 10000, 100, 1 * Math.pow(10, 15), minimus);
-  this.setupPlanetsMoons([minimus], [moon]);
+  this.setupPlanetsMoons([minimus], [moon], []);
   this.rocket.x = minimus.radius + rocketHeight / 2;
   this.rocket.y = 0;
   this.rocket.velocity.y = 0;

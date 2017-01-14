@@ -3,7 +3,9 @@ var levels = [];
 var nextLevelIndex;
 
 function newGame() {
-  levels = [new IntroLevel(), new EscapePlanet(), new MinimusMoon(), new LowEarthOrbitLevel(), new EarthLevel()];
+  levels = [  new IntroLevel(), new EscapePlanet(),
+              new MinimusDocking(), new MinimusMoon(),
+              new LowEarthOrbitLevel(), new EarthLevel()];
   nextLevelIndex = 0;
   nextLevel();
 }
@@ -20,8 +22,9 @@ function setLevel(levelIndex) {
 
 var Level = function() {
   this.planets = [];
-  this.bodies = []; //all moons and planets
+  this.bodies = []; //all moons, planets, and satellites
   this.moons = [];
+  this.satellites = [];
   this.rocket = Rocket(0, 0);
   this.input = {spacebar: false, left: false, right: false};
   this.inputMuted = false;
@@ -29,10 +32,11 @@ var Level = function() {
   this.zoomMode = 1; //0 for normal, 1 on ship
 };
 
-Level.prototype.setupPlanetsMoons = function(planets, moons) {
+Level.prototype.setupPlanetsMoons = function(planets, moons, satellites) {
   this.planets = planets;
   this.moons = moons;
-  this.bodies = this.planets.concat(this.moons);
+  this.satellites = satellites;
+  this.bodies = this.planets.concat(this.moons).concat(this.satellites);
   for (var i=0; i < this.planets.length; i++) {
     this.planets[i].calculateSurfaceVelocity();
   }

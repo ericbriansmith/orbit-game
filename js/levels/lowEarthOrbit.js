@@ -5,7 +5,7 @@ var LowEarthOrbitLevel = function() {
   this.rocket.x = earth.radius + 160000;
   this.rocket.y = 0;
   this.rocket.velocity.y = -7808;
-  this.setupPlanetsMoons([earth], [new Moon("Moon", 385000000, 1737100, 7.3477 * Math.pow(10, 22), earth)]);
+  this.setupPlanetsMoons([earth], [new Moon("Moon", 385000000, 1737100, 7.3477 * Math.pow(10, 22), earth)], []);
 };
 
 LowEarthOrbitLevel.prototype = Object.create(Level.prototype);

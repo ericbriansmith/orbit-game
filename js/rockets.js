@@ -118,9 +118,22 @@ function drawBodies(scale) {
   var i;
   for (i = 0; i < gameState.bodies.length; i++) {
     var body = gameState.bodies[i];
-    drawCircle(body.x, body.y, body.radius, scale, body.direction);
+    if (body instanceof Satellite) {
+      drawSatellite(body, scale);
+    } else {
+      drawCircle(body.x, body.y, body.radius, scale, body.direction);
+    }
     // drawLaunchpads(body, scale);
   }
+}
+
+function drawSatellite(satellite, scale) {
+  resetTransform();
+  ctx.translate(gameWidth / 2, gameHeight / 2);
+  var x = satellite.x;
+  var y = satellite.y;
+  ctx.translate(scale * (gameState.rocket.x * -1 + x), scale * (gameState.rocket.y * -1 + y));
+  
 }
 
 var launchPadSize = 50;
