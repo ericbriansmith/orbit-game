@@ -185,39 +185,6 @@ function drawState(tick) {
   drawStatus(tick);
 }
 
-function drawStatus(tick) {
-  var nearestBody = gameState.rocket.nearestBody;
-  ctx.strokeStyle = colors.text;
-  ctx.lineWidth = 2;
-  ctx.fillStyle = colors.text;
-  var lineJump = 20;
-  var textX = 2;
-  var index = lineJump;
-  ctx.font = "15px Arial";
-  ctx.fillText("Fuel: " + Math.round(gameState.rocket.fuel * 100) / 100, textX, index);
-  index += lineJump;
-  var velocity = gameState.rocket.relativeVelocityNearest.total;
-  var nearestBodyName = gameState.rocket.nearestBody.name;
-  if (gameState.rocket.collided) {
-    velocity = 0;
-  }
-  ctx.fillText("Velocity (" + nearestBodyName + "): " + metersOrKm(velocity, "/s"), textX, index);
-  index += lineJump;
-  ctx.fillText("Speed to hold orbit: " + metersOrKm(speedToKeepOrbit, "/s"), textX, index);
-  index += lineJump;
-  ctx.fillText("Altitude (" + nearestBodyName + "): " + metersOrKm(gameState.rocket.nearestBody.rocketDistanceResult.distance, ""), textX, index);
-  index += lineJump;
-  ctx.fillText("Time stretch: " + gameState.timeScale, textX, index);
-  index += lineJump;
-  ctx.fillText("Approach Speed: " + metersOrKm(gameState.rocket.approachPlanetSpeed, "/s"), textX, index);
-  index += lineJump;
-  ctx.fillText("Tangent Speed: " + metersOrKm(gameState.rocket.planetTangentSpeed, "/s"), textX, index);
-  index += lineJump;
-  ctx.fillText("Direction: " + Math.floor(gameState.rocket.nearestBody.rocketDistanceResult.direction * 180 / Math.PI), textX, index);
-  index += lineJump;
-  ctx.fillText("fps: " + Math.floor(1/tick), textX, index);
-}
-
 function metersOrKm(value,tag) {
   if (value > 1000) {
     return "" + (Math.round((value / 1000) * 1000) / 1000) + "km" + tag;
