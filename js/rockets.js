@@ -101,9 +101,9 @@ function moveThings(movingGameState, tick) {
   if (updateCount == 0) {
     updatePeriodicCalculations();
   }
-  var i;
-  for (i = 0; i < movingGameState.moons.length; i++) {
-    movingGameState.moons[i].move(tick);
+  var moonsAndSatellites = movingGameState.moons.concat(movingGameState.satellites);
+  for (i = 0; i < moonsAndSatellites.length; i++) {
+    moonsAndSatellites[i].move(tick);
   }
   updateCount = (updateCount + 1) % 30;
 }
@@ -133,7 +133,7 @@ function drawSatellite(satellite, scale) {
   var x = satellite.x;
   var y = satellite.y;
   ctx.translate(scale * (gameState.rocket.x * -1 + x), scale * (gameState.rocket.y * -1 + y));
-  
+  ctx.fillRect(0, 0, scale * 30, scale * 30);
 }
 
 var launchPadSize = 50;

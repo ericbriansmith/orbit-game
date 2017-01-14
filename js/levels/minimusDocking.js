@@ -6,7 +6,7 @@ var MinimusDocking = function() {
   this.setupPlanetsMoons([minimus], [], [spaceStation]);
   this.rocket.x = minimus.radius + rocketHeight / 2;
   this.rocket.y = 0;
-  this.rocket.fuel = 4;
+  this.rocket.fuel = 100;
 };
 MinimusDocking.prototype = Object.create(Level.prototype);
 MinimusDocking.prototype.start = function() {
