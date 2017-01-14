@@ -1,5 +1,12 @@
 var IntroLevel = function() {
   Level.call(this);
+};
+
+IntroLevel.prototype = Object.create(Level.prototype);
+
+IntroLevel.prototype.start = function() {
+  this.superStart();
+  message("Small planet. Complete an orbit.");
   var minimus = new Minimus();
   this.setupPlanetsMoons([minimus], [], []);
   this.rocket.x = minimus.radius + rocketHeight / 2;
@@ -8,11 +15,8 @@ var IntroLevel = function() {
   this.rocket.fuel = 9;
   this.quartersCompleted = 0; //user needs to complete 4 quarters
   this.travelingClockwise = false;
-};
-IntroLevel.prototype = Object.create(Level.prototype);
-IntroLevel.prototype.start = function() {
-  message("Small planet. Complete an orbit.");
 }
+
 IntroLevel.prototype.goalComplete = function() {
   //planet center is 0,0
   if (this.quartersCompleted == 0 && gameState.rocket.x < 0) {

@@ -20,7 +20,9 @@ function setLevel(levelIndex) {
   nextLevelIndex++;
 }
 
-var Level = function() {
+var Level = function() {};
+
+Level.prototype.superStart = function() {
   this.planets = [];
   this.bodies = []; //all moons, planets, and satellites
   this.moons = [];
@@ -30,7 +32,7 @@ var Level = function() {
   this.inputMuted = false;
   this.timeScale = 1;
   this.zoomMode = 1; //0 for normal, 1 on ship
-};
+}
 
 Level.prototype.setupPlanetsMoons = function(planets, moons, satellites) {
   this.planets = planets;

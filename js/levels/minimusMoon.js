@@ -1,5 +1,10 @@
 var MinimusMoon = function() {
-  Level.call(this);
+
+};
+MinimusMoon.prototype = Object.create(Level.prototype);
+MinimusMoon.prototype.start = function() {
+  message("Small planet with moon.");
+  this.superStart();
   var minimus = new Minimus();
   minimus.initAngularVelocity();
   var moon = new Moon("Moon", 10000, 100, 1 * Math.pow(10, 15), minimus);
@@ -9,10 +14,6 @@ var MinimusMoon = function() {
   this.rocket.velocity.y = 0;
   this.rocket.fuel = 9;
   this.travelingClockwise = false;
-};
-MinimusMoon.prototype = Object.create(Level.prototype);
-MinimusMoon.prototype.start = function() {
-  message("Small planet with moon.");
 }
 MinimusMoon.prototype.goalComplete = function() {
   return false;
