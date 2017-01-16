@@ -194,6 +194,9 @@ function metersOrKm(value,tag) {
 }
 
 function drawRocket(rocket, scale) {
+  if (rocket.crashed) {
+    message("Crashed");
+  }
   var rocketHalfHeight = rocketHeight / 2;
   ctx.strokeStyle = colors.rocket;
   ctx.lineWidth = 2;

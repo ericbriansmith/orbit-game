@@ -45,6 +45,7 @@ function Rocket(startX, startY) {
     lastX: 0,
     lastY: 0,
     collided: false,
+    crashed: false,
     dir: Math.PI / 2,
     dirChangeAmount: 1,
     nearestBody: null,
@@ -61,10 +62,15 @@ function Rocket(startX, startY) {
       var nearestBody = this.nearestBody;
       var nearestBodyDistanceResult = this.nearestBody.rocketDistanceResult;
       this.calculateRelativeVelocityNearest();
+
       this.detectCollision();
+
       var i;
       var accelX=0, accelY=0, accel;
       if (this.collided) {
+        if (nearestBody instanceof Planet) {
+          this.dir += nearestBody.angularVelocity * time;
+        }
         var correctionRatio = (nearestBody.radius + rocketHeight / 2)  / nearestBodyDistanceResult.distToCenter
         this.x = nearestBody.x + nearestBodyDistanceResult.xToCenter * correctionRatio;
         this.y = nearestBody.y + nearestBodyDistanceResult.yToCenter * correctionRatio;
@@ -92,14 +98,6 @@ function Rocket(startX, startY) {
       this.velocity.total = Math.sqrt(Math.pow(this.velocity.x, 2) + Math.pow(this.velocity.y, 2));
       this.x += this.velocity.x * time;
       this.y += this.velocity.y * time;
-
-      if (this.collided && 1==2) {//TODO: crashing
-        if (this.relativeVelocityNearest.total > 10) {
-          this.crashed = true;
-          message("You have crashed");
-        }
-        this.velocity = { x: nearestBody.velocity.x, y: nearestBody.velocity.y, total: 0 };
-      }
 
       if (gameState.input.left) {
         this.dir -= this.dirChangeAmount * time;
@@ -144,6 +142,12 @@ function Rocket(startX, startY) {
       }
       if (this.nearestBody.rocketDistanceResult.distance < rocketHeight / 2 + threshold) {
         this.collided = true;
+        if (!this.crashed) {
+          var tangentGroundSpeed = -this.planetTangentSpeed - this.nearestBody.surfaceVelocity;
+          if (this.approachPlanetSpeed > 10 || tangentGroundSpeed > 5) {
+            this.crashed = true;
+          }
+        }
       } else {
         this.collided = false;
       }
