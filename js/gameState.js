@@ -135,22 +135,25 @@ function Rocket(startX, startY) {
       relativeVelocity.total = Math.sqrt(Math.pow(relativeVelocity.x, 2) + Math.pow(relativeVelocity.y, 2));
       this.relativeVelocityNearest = relativeVelocity;
     },
+    firstCollisionCheck: true,
     detectCollision: function() {
       var threshold = 1; //plus one when space is not pressed to avoid flickers
       if (gameState.input.spacebar) {
         threshold = 0;
       }
       if (this.nearestBody.rocketDistanceResult.distance < rocketHeight / 2 + threshold) {
-        this.collided = true;
-        if (!this.crashed) {
+        if (!this.collided && !this.firstCollisionCheck) {
           var tangentGroundSpeed = -this.planetTangentSpeed - this.nearestBody.surfaceVelocity;
+          console.log("collided. approach=" + this.approachPlanetSpeed + ", tangentGroundSpeed=" + tangentGroundSpeed);
           if (this.approachPlanetSpeed > 10 || tangentGroundSpeed > 5) {
             this.crashed = true;
           }
         }
+        this.collided = true;
       } else {
         this.collided = false;
       }
+      this.firstCollisionCheck = false;
     }
   };
   return rocket;
