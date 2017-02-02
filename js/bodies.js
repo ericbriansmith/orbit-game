@@ -14,6 +14,18 @@ var Body = function(name, radius, mass) {
   };
 }
 
+Body.prototype.getDistanceToBodySurface = function(x,y) {
+  var xDiff = x - this.x;
+  var yDiff = y - this.y;
+  var distToCenter = Math.sqrt(Math.pow(xDiff, 2) + Math.pow(yDiff, 2));
+  var distance = distToCenter - this.radius;
+  var dir = getAngleFromCartesian(xDiff, yDiff);
+
+  return { distToCenter: distToCenter, distance: distance,
+    xUnit: xDiff / distToCenter, yUnit: yDiff / distToCenter,
+    xToCenter: xDiff, yToCenter: yDiff, direction: dir };
+}
+
 function OritingBody(name,altitude,radius,mass,planet) {
   Body.call(this, name, radius, mass);
   this.planet = planet;
@@ -27,7 +39,7 @@ OritingBody.prototype = Object.create(Body.prototype);
 OritingBody.prototype.move = function(time) {
   this.x += this.velocity.x * time;
   this.y += this.velocity.y * time;
-  var distanceResult = getDistanceToBodySurface(this.x, this.y, this.planet);
+  var distanceResult = this.planet.getDistanceToBodySurface(this.x, this.y);
 
   var accel = gravityAcceleration(this.planet.mass, distanceResult.distToCenter);
   this.velocity.x -= distanceResult.xUnit * accel * time;
@@ -43,6 +55,18 @@ function Satellite (name, altitude, planet) {
   OritingBody.call(this, name, altitude, 0, 0, planet);
 }
 Satellite.prototype = Object.create(OritingBody.prototype);
+
+Satellite.prototype.getDistanceToBodySurface = function(x,y) {
+  var xDiff = x - this.x;
+  var yDiff = y - this.y;
+  var distToCenter = Math.sqrt(Math.pow(xDiff, 2) + Math.pow(yDiff, 2));
+  var distance = distToCenter - 10;
+  var dir = getAngleFromCartesian(xDiff, yDiff);
+
+  return { distToCenter: distToCenter, distance: distance,
+    xUnit: xDiff / distToCenter, yUnit: yDiff / distToCenter,
+    xToCenter: xDiff, yToCenter: yDiff, direction: dir };
+}
 
 function Planet (name,radius,mass) {
   Body.call(this, name, radius, mass);

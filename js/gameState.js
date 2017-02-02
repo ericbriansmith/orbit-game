@@ -8,19 +8,7 @@ function addLaunchpad(body, direction) {
 }
 
 function getDistanceToBodySurfaceForRocket(body) {
-  return getDistanceToBodySurface(gameState.rocket.x, gameState.rocket.y, body);
-}
-
-function getDistanceToBodySurface(x,y,body) {
-  var xDiff = x - body.x;
-  var yDiff = y - body.y;
-  var distToCenter = Math.sqrt(Math.pow(xDiff, 2) + Math.pow(yDiff, 2));
-  var distance = distToCenter - body.radius;
-  var dir = getAngleFromCartesian(xDiff, yDiff);
-
-  return { distToCenter: distToCenter, distance: distance,
-    xUnit: xDiff / distToCenter, yUnit: yDiff / distToCenter,
-    xToCenter: xDiff, yToCenter: yDiff, direction: dir };
+  return body.getDistanceToBodySurface(gameState.rocket.x, gameState.rocket.y);
 }
 
 function getAngleFromCartesian(x, y) {
